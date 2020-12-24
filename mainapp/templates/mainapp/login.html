@@ -1,0 +1,39 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" style="height: 100%; ">
+
+<head>
+    <title>Login</title>
+    <meta id="viewport" name="viewport" content ="width=device-width" />
+    <!-- <link rel="stylesheet" type="text/css" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" /> -->
+    <link rel="stylesheet" type="text/css" href="{% static 'mainapp/style-login.css' %}" />
+    <link rel="icon" type="image/png" href="{% static 'mainapp/iub_logo.jpg' %}" />
+</head>
+
+<body>
+    <div class="body rounded">
+        <form style="text-align: center; width: 330px;">
+            <img src="{% static 'mainapp/iub_logo.png' %}" width="150px" />
+            <h1>Welcome to SPM</h1>
+            <div style="text-align: left;">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" name="username" class="form-control" autofocus placeholder="Username" />
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" name="password" class="form-control" placeholder="Password" />
+                    <small><a href="" onclick="forgotpassword();">Forgot your password?</a></small>
+                    <script>
+                        function forgotpassword() {
+                            alert("Please contact the Registrar's Office.");
+                        }
+                    </script>
+                </div>
+            </div>
+            <button class="btn btn-primary">Log in</button>
+        </form>
+    </div>
+</body>
+
+</html>
