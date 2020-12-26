@@ -54,3 +54,8 @@ window.addEventListener('resize', () => {
         moreButton.style.backgroundColor = '';
     }
 });
+
+function highlightCurrentPage(pageName) {
+    let current = document.querySelector(`#${pageName}`);
+    current.className = 'current';
+}

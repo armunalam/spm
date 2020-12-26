@@ -1,11 +1,11 @@
 @font-face {
     font-family: Oxygen;
-    src: url(Oxygen-Regular.ttf);
+    src: url(fonts/Oxygen-Regular.ttf);
 }
 
 @font-face {
     font-family: Oxygen;
-    src: url(Oxygen-Bold.ttf);
+    src: url(fonts/Oxygen-Bold.ttf);
     font-weight: bold;
 }
 
@@ -40,7 +40,7 @@ ul.heading-ul {
     min-height: 58px;
     float: left;
     list-style-type: none;
-    background-image: url('background.gif');
+    background-image: url('images/background.gif');
 }
 
 ul.heading-ul a:not(.heading-logo-li) {

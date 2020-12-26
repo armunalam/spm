@@ -1,0 +1,90 @@
+{% extends "mainapp/layout.html" %}
+{% block title %}Data Entry{% endblock %}
+{% block body %}
+    <div class="flex-container blockwise">
+        <div class="box-section">
+            <div class="box-section-head">Data Entry</div>
+            <div class="box-section-body">
+                <!-- <p>The following is a sample placeholder form for the template.</p> -->
+                <form class="marg-top marg-bottom">
+                    <!-- <div class="form-group">
+                        <div class="form-group row">
+                            <label for="first-name" class="col-sm-3 col-form-label">First Name</label>
+                            <input type="text" id="first-name" class="form-control col-sm-5" />
+                        </div>
+                    </div> -->
+                    <table class="form-table">
+                        <tr>
+                            <!-- <td>
+                                <label for="full-name">Full Name</label>
+                            </td> -->
+                            <td class="form-field">
+                                <input type="text" id="first-name" class="form-control" placeholder="First Name" />
+                            </td>
+                            <td class="form-field">
+                                <input type="text" id="last-name" class="form-control" placeholder="Last Name" />
+                            </td>
+                        <!-- </tr>
+                        
+                        <tr> -->
+                            <!-- <td>
+                                <label for="last-name">Last Name</label>
+                            </td>
+                            <td>
+                                <input type="text" id="last-name" class="form-control" />
+                            </td> -->
+                        </tr>
+                        <tr>
+                            <!-- <td>
+                                <label for="email">Email Address</label>
+                            </td> -->
+                            <td>
+                                <input type="email" id="email" class="form-control" placeholder="Email Address" />
+                            </td>
+                            <td>
+                                <input type="tel" id="mobile-number" class="form-control" placeholder="Mobile Number" />
+                            </td>
+                            <!-- <td>
+                                <label for="username">New Username</label>
+                            </td> -->
+                        </tr>
+                        <tr>
+                            <td>
+                                <input type="text" id="dept" class="form-control" placeholder="Department" />
+                            </td>
+                            <td>
+                                <input type="text" id="major" class="form-control" placeholder="Major" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <input type="text" id="username" class="form-control" placeholder="New Username" autocomplete="username" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <!-- <td>
+                                <label for="password">New Password</label>
+                            </td> -->
+                            <td>
+                                <input type="password" id="password" class="form-control" placeholder="New Password" autocomplete="new-password" />
+                            </td>
+                            <!-- <td>
+                                <label for="password-confirm">Confirm Password</label>
+                            </td> -->
+                            <td>
+                                <input type="password" id="password-confirm" class="form-control" placeholder="Confirm Password" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;" class="last-row" colspan="2"><button class="btn btn-primary">Sign up</button></td>
+                        </tr>
+                    </table>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        highlightCurrentPage('dataentry');
+    </script>
+{% endblock %}
