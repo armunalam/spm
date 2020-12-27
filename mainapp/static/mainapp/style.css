@@ -257,6 +257,7 @@ nav.sidebar a.current {
 
 .main-content {
     margin: 10px;
+    padding-bottom: 3.4px;
 }
 
 
@@ -324,8 +325,8 @@ nav.sidebar a.current {
 .box-section {
     flex: 1 1 0px;
     margin: 5px;
-    margin-top: 0px;
-    margin-bottom: 10px;
+    /* margin-top: 0px; */
+    /* margin-bottom: 10px; */
     padding: 0px;
     border: 1px solid #dee4e9;
     border-radius: 6px;
