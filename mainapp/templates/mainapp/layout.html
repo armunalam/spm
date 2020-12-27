@@ -17,9 +17,9 @@
     <nav class="heading">
         <ul class="heading-ul">
             <li class="heading-li heading-logo stay">
-                <a class="heading-logo-li title" href=""><img src="{% static 'mainapp/images/iub_logo.png' %}" height="50px" /></a>
+                <a class="heading-logo-li title" href="{% url 'dashboard' %}"><img src="{% static 'mainapp/images/iub_logo.png' %}" height="50px" /></a>
             </li>
-            <li class="heading-li stay"><a class="title" href=""><span class="title-full-name">Student Performance
+            <li class="heading-li stay"><a class="title" href="{% url 'dashboard' %}"><span class="title-full-name">Student Performance
                         Monitor</span><span class="title-short-name">SPM</span></a></li>
             <li>
                 <div class="heading-dropdown">
