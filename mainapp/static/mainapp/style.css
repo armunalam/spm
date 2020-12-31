@@ -29,7 +29,7 @@ nav.heading {
     width: 100%;
     top: 0;
     z-index: 10;
-    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.06);
+    box-shadow: 0 0.2rem 0.6rem rgba(0, 0, 0, 0.06); /* 0 0.5rem 1.5rem rgba(0, 0, 0, 0.06); */
     border-bottom: 1px solid #dee4e9;
 }
 
@@ -258,6 +258,7 @@ nav.sidebar a.current {
 .main-content {
     margin: 10px;
     padding-bottom: 3.4px;
+    max-width: 1480px;
 }
 
 
@@ -475,6 +476,17 @@ nav.sidebar a.current {
         text-align: left;
     }
 }
+@media (min-width: 1758px) {
+    .main-content {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+
+
+
+
 /* @media (min-width: 850px) {
     .form-table tr>td {
         text-align: right;
