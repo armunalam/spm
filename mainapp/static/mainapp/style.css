@@ -105,10 +105,10 @@ li.heading-logo {
     font-size: 16px;
 }
 
-.heading-dropdown:hover {
+/* .heading-dropdown:hover {
     background-color: #cccccf;
     color: black;
-}
+} */
 
 .heading-dropdown-icon {
     display: block;
