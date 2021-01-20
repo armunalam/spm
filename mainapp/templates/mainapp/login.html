@@ -12,7 +12,8 @@
 
 <body>
     <div class="body rounded">
-        <form style="text-align: center; width: 330px;">
+        <form style="text-align: center; width: 330px;" action="{% url 'loginpage' %}" method="post">
+            {% csrf_token %}
             <img src="{% static 'mainapp/images/iub_logo.png' %}" width="150px" />
             <h1>Welcome to SPM</h1>
             <div style="text-align: left;">

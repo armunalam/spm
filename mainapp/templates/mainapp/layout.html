@@ -17,10 +17,16 @@
     <nav class="heading">
         <ul class="heading-ul">
             <li class="heading-li heading-logo stay">
-                <a class="heading-logo-li title" href="{% url 'dashboard' %}"><img src="{% static 'mainapp/images/iub_logo.png' %}" height="50px" /></a>
+                <a class="heading-logo-li title" href="{% url 'dashboard' %}">
+                    <img src="{% static 'mainapp/images/iub_logo.png' %}" height="50px" />
+                </a>
             </li>
-            <li class="heading-li stay"><a class="title" href="{% url 'dashboard' %}"><span class="title-full-name">Student Performance
-                        Monitor</span><span class="title-short-name">SPM</span></a></li>
+            <li class="heading-li stay">
+                <a class="title" href="{% url 'dashboard' %}">
+                    <span class="title-full-name">Student Performance Monitor</span>
+                    <span class="title-short-name">SPM</span>
+                </a>
+            </li>
             <li>
                 <div class="heading-dropdown">
                     <span class="heading-dropdown-icon">
@@ -30,7 +36,7 @@
                                 d="M3 14s-1 0-1-1 1-4 6-4 6 3 6 4-1 1-1 1H3zm5-6a3 3 0 1 0 0-6 3 3 0 0 0 0 6z" />
                         </svg>
                     </span>
-                    <span class="heading-dropdown-text">Username <br /><small>(Student)</small></span>
+                    <span class="heading-dropdown-text">{{ userfullname }} <br /><small>({{ usertype }})</small></span>
                 </div>
             </li>
             <li class="stay" id="more-bar">
@@ -108,7 +114,7 @@
                     </a>
                 </li>
                 <li>
-                    <a href="">
+                    <a href="{% url 'logoutpage' %}">
                         <span class="sidebar-logo">
                             <svg viewBox="0 0 16 16" class="bi bi-door-open" fill="currentColor"
                                 xmlns="http://www.w3.org/2000/svg">
