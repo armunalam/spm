@@ -70,7 +70,7 @@ class Enrollment_T(models.Model):
     
 class Assessment_T(models.Model):
     assessmentNo = models.CharField(max_length=30, primary_key=True)
-    marksObtained = models.FloatField()
+    marks = models.FloatField()
     coNo = models.ForeignKey(CO_T, on_delete=models.CASCADE, default=0)
     enrollmentID = models.ForeignKey(Enrollment_T, on_delete=models.CASCADE)
     sectionID = models.ForeignKey(Section_T, on_delete=models.CASCADE, default=0)
@@ -78,6 +78,5 @@ class Assessment_T(models.Model):
 class Evaluation_T(models.Model):
     evaluationNo = models.CharField(max_length=30, primary_key=True)
     obtainedMarks = models.FloatField()
-    associatedCO = models.CharField(max_length=5)
     assessmentNo = models.ForeignKey(Assessment_T, on_delete=models.CASCADE, default='N/A')
     studentID = models.ForeignKey(Student_T, on_delete=models.CASCADE, default='N/A')
