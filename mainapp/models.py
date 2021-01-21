@@ -36,6 +36,8 @@ class Faculty_T(models.Model):
 class Program_T(models.Model):
     programID = models.CharField(max_length=5, primary_key=True)
     programName = models.CharField(max_length=30)
+    departmentID = models.ForeignKey(Department_T, on_delete=models.CASCADE, default='N/A')
+
     
 class Course_T(models.Model):
     courseID = models.CharField(max_length=7, primary_key=True)
@@ -49,7 +51,7 @@ class PLO_T(models.Model):
     details = models.CharField(max_length=30)
     
 class CO_T(models.Model):
-    coNo = models.CharField(max_length=5, primary_key=True)
+    coNo = models.IntegerField(primary_key=True)
     ploNo = models.ForeignKey(PLO_T, on_delete=models.CASCADE)
     details = models.CharField(max_length=30)
     courseID = models.ForeignKey(Course_T, on_delete=models.CASCADE)
@@ -66,17 +68,16 @@ class Enrollment_T(models.Model):
     semester = models.CharField(max_length=2)
     year = models.CharField(max_length=4)
     
+class Assessment_T(models.Model):
+    assessmentNo = models.CharField(max_length=30, primary_key=True)
+    marksObtained = models.FloatField()
+    coNo = models.ForeignKey(CO_T, on_delete=models.CASCADE, default=0)
+    enrollmentID = models.ForeignKey(Enrollment_T, on_delete=models.CASCADE)
+    sectionID = models.ForeignKey(Section_T, on_delete=models.CASCADE, default=0)
+
 class Evaluation_T(models.Model):
     evaluationNo = models.CharField(max_length=30, primary_key=True)
     obtainedMarks = models.FloatField()
     associatedCO = models.CharField(max_length=5)
-
-class Assessment_T(models.Model):
-    assessmentNo = models.CharField(max_length=10, primary_key=True)
-    marksObtained = models.FloatField()
-    associatedCO = models.CharField(max_length=5)
-    enrollmentID = models.ForeignKey(Enrollment_T, on_delete=models.CASCADE)
-    evaluationID = models.ForeignKey(Evaluation_T, on_delete=models.CASCADE)
-    
-    
-
+    assessmentNo = models.ForeignKey(Assessment_T, on_delete=models.CASCADE, default='N/A')
+    studentID = models.ForeignKey(Student_T, on_delete=models.CASCADE, default='N/A')
