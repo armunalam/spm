@@ -12,8 +12,8 @@ class Department_T(models.Model):
     
 class Student_T(models.Model):
     studentID = models.CharField(max_length=7, primary_key=True)
-    fname = models.CharField(max_length=30)
-    lname = models.CharField(max_length=30)
+    fname = models.CharField(max_length=30, null=True)
+    lname = models.CharField(max_length=30, null=True)
     program = models.CharField(max_length=30)
     departmentID = models.ForeignKey(Department_T, on_delete=models.CASCADE)
     dateOfBirth = models.DateField(null=True)
