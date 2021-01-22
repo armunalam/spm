@@ -8,14 +8,19 @@ class School_T(models.Model):
 class Department_T(models.Model):
     departmentID = models.CharField(max_length=5, primary_key=True)
     departmentName = models.CharField(max_length=30)
-    schoolID = models.ForeignKey(School_T, on_delete=models.CASCADE)
+    school = models.ForeignKey(School_T, on_delete=models.CASCADE)
+    
+class Program_T(models.Model):
+    programID = models.CharField(max_length=5, primary_key=True)
+    programName = models.CharField(max_length=30)
+    department = models.ForeignKey(Department_T, on_delete=models.CASCADE, default='N/A')
     
 class Student_T(models.Model):
     studentID = models.CharField(max_length=7, primary_key=True)
     fname = models.CharField(max_length=30, null=True)
     lname = models.CharField(max_length=30, null=True)
-    program = models.CharField(max_length=30)
-    departmentID = models.ForeignKey(Department_T, on_delete=models.CASCADE)
+    program = models.ForeignKey(Program_T, on_delete=models.CASCADE, default='N/A')
+    department = models.ForeignKey(Department_T, on_delete=models.CASCADE)
     dateOfBirth = models.DateField(null=True)
     gender = models.CharField(max_length=1, null=True)
     email = models.CharField(max_length=30, null=True)
@@ -31,52 +36,45 @@ class Faculty_T(models.Model):
     email = models.CharField(max_length=30, null=True)
     phone = models.CharField(max_length=15, null=True)
     address = models.CharField(max_length=30, null=True)
-    departmentID = models.ForeignKey(Department_T, on_delete=models.CASCADE)
-    
-class Program_T(models.Model):
-    programID = models.CharField(max_length=5, primary_key=True)
-    programName = models.CharField(max_length=30)
-    departmentID = models.ForeignKey(Department_T, on_delete=models.CASCADE, default='N/A')
-
+    department = models.ForeignKey(Department_T, on_delete=models.CASCADE)
     
 class Course_T(models.Model):
     courseID = models.CharField(max_length=7, primary_key=True)
-    courseName = models.CharField(max_length=30)
+    courseName = models.CharField(max_length=30, null=True)
     noOfCredits = models.IntegerField()
-    programID = models.ForeignKey(Program_T, on_delete=models.CASCADE)
+    program = models.ForeignKey(Program_T, on_delete=models.CASCADE)
     
 class PLO_T(models.Model):
     ploNo = models.CharField(max_length=5, primary_key=True)
-    programID = models.ForeignKey(Program_T, on_delete=models.CASCADE)
-    details = models.CharField(max_length=30)
+    program = models.ForeignKey(Program_T, on_delete=models.CASCADE)
+    details = models.CharField(max_length=50)
     
 class CO_T(models.Model):
-    coNo = models.IntegerField(primary_key=True)
-    ploNo = models.ForeignKey(PLO_T, on_delete=models.CASCADE)
-    details = models.CharField(max_length=30)
-    courseID = models.ForeignKey(Course_T, on_delete=models.CASCADE)
+    coNo = models.IntegerField()
+    plo = models.ForeignKey(PLO_T, on_delete=models.CASCADE, default='N/A')
+    course = models.ForeignKey(Course_T, on_delete=models.CASCADE, default='N/A')
     
 class Section_T(models.Model):
-    sectionID = models.IntegerField(primary_key=True)
-    courseID = models.ForeignKey(Course_T, on_delete=models.CASCADE)
-    facultyID = models.ForeignKey(Faculty_T, on_delete=models.CASCADE)
+    sectionNo = models.IntegerField()
+    course = models.ForeignKey(Course_T, on_delete=models.CASCADE)
+    faculty = models.ForeignKey(Faculty_T, on_delete=models.CASCADE)
     
 class Enrollment_T(models.Model):
-    enrollmentID = models.CharField(max_length=10, primary_key=True)
-    studentID = models.ForeignKey(Student_T, on_delete=models.CASCADE)
-    sectionID = models.ForeignKey(Section_T, on_delete=models.CASCADE)
-    semester = models.CharField(max_length=2)
+    enrollmentID = models.AutoField(primary_key=True)
+    student = models.ForeignKey(Student_T, on_delete=models.CASCADE)
+    section = models.ForeignKey(Section_T, on_delete=models.CASCADE, default=0)
+    semester = models.CharField(max_length=6)
     year = models.CharField(max_length=4)
     
 class Assessment_T(models.Model):
-    assessmentNo = models.CharField(max_length=30, primary_key=True)
+    assessmentNo = models.AutoField(primary_key=True)
     marks = models.FloatField()
-    coNo = models.ForeignKey(CO_T, on_delete=models.CASCADE, default=0)
-    enrollmentID = models.ForeignKey(Enrollment_T, on_delete=models.CASCADE)
-    sectionID = models.ForeignKey(Section_T, on_delete=models.CASCADE, default=0)
+    co = models.ForeignKey(CO_T, on_delete=models.CASCADE)
+    section = models.ForeignKey(Section_T, on_delete=models.CASCADE, default=0)
 
 class Evaluation_T(models.Model):
-    evaluationNo = models.CharField(max_length=30, primary_key=True)
+    evaluationNo = models.AutoField(primary_key=True)
     obtainedMarks = models.FloatField()
-    assessmentNo = models.ForeignKey(Assessment_T, on_delete=models.CASCADE, default='N/A')
-    studentID = models.ForeignKey(Student_T, on_delete=models.CASCADE, default='N/A')
+    assessment = models.ForeignKey(Assessment_T, on_delete=models.CASCADE, default='N/A')
+    enrollment = models.ForeignKey(Enrollment_T, on_delete=models.CASCADE, default=0)
+    # student = models.ForeignKey(Student_T, on_delete=models.CASCADE, default='N/A')
