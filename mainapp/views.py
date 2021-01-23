@@ -64,7 +64,7 @@ def studentDashboard(request):
     chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
     chartD = [] # [2, 10, 5, 3, 20, 30, 45]
     
-    row = getDepartmentWisePLO()
+    row = getDepartmentWisePLO('CSE')
     
     for i in row:
         chartL.append(i[1])
@@ -80,6 +80,9 @@ def studentDashboard(request):
     
     ploTable = getCourseWisePLO(student_id)
     
+    # Stacked PLO Chart
+    (plo, courses, table) = getCourseWisePLOChart(student_id)
+    
     
     return render(request, 'mainapp/dashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
@@ -89,6 +92,12 @@ def studentDashboard(request):
         'chartLabel': chartLabel,
         'chartDataSet': chartDataSet,
         'ploTable': ploTable,
+        
+        # Stacked PLO Chart
+        'plo': plo,
+        'courses': courses,
+        'table': table,
+        'ploWiseChartName': 'Course-wise PLO analysis'
     })
 
 @authenticated

@@ -73,6 +73,43 @@
             lineChart(ctx4, 'Sample Dataset 2', ['January', 'February', 'March', 'April', 'May', 'June', 'July'], [8, 5, 8, 9, 13, 11, 12], '#962323', '#f0cdcd'); {% endcomment %}
         </script>
     </div>
+    <div id="testID" class="flex-container blockwise">
+        
+        <script>
+            
+            graphContainer = document.querySelector('#testID');
+            plo = [{% for i in plo %} '{{ i }}', {% endfor %}];
+            courses = [{% for i in courses %} '{{ i }}', {% endfor %}];
+            table = {{ table }};
+            let graphHolder = document.createElement('div');
+            graphHolder.className = 'box';
+            graphHolder.innerHTML = `
+                <div class="box-section-head negative-margin">{{ ploWiseChartName }}</div>
+                <div class="chart marg-top">
+                    <canvas id="chartPLO" style="width: 100%; height: 90%;" width="1000" height="500"></canvas>
+                </div>
+            `;
+            graphContainer.appendChild(graphHolder);
+            datasetlist = []
+            {% comment %} colors = ['#22aa99', '#994499', '#316395', '#b82e2e', '#66aa00', '#dd4477'] {% endcomment %}
+            colors = palette('tol', courses.length).map(function(hex) {
+                return '#' + hex;
+            });
+            for (let i = 0; i < courses.length; i++) {
+                
+                datasetlist.push({
+                    label: courses[i],
+                    data: table[i],
+                    backgroundColor: colors[i]
+                    {% comment %} backgroundColor: colors[i] {% endcomment %}
+                });
+            }
+            console.log(plo);
+            console.log(datasetlist);
+            
+            stackedChart(graphHolder.children[1].children[0].getContext('2d'), plo, datasetlist);
+        </script>
+    </div>
     <div class="flex-container blockwise">
         <div class="box-section">
             <div class="box-section-head">PLO Achievement Table</div>

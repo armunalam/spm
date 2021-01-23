@@ -80,6 +80,34 @@ function barChart(ctx,
     });
 }
 
+function stackedChart(ctx, labelName, datasetlist) {
+    
+    var chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labelName, // responsible for how many bars are gonna show on the chart
+            // create 12 datasets, since we have 12 items
+            // data[0] = labels[0] (data for first bar - 'Standing costs') | data[1] = labels[1] (data for second bar - 'Running costs')
+            // put 0, if there is no data for the particular bar
+            datasets: datasetlist
+        },
+        options: {
+            responsive: false,
+            legend: {
+                position: 'right' // place legend on the right side of chart
+            },
+            scales: {
+                xAxes: [{
+                    stacked: true // this should be set to make the bars stacked
+                }],
+                yAxes: [{
+                    stacked: true // this also..
+                }]
+            }
+        }
+    });
+}
+
 window.addEventListener('resize', () => {
     if (window.innerWidth > 850) {
         var sidebar = document.querySelector('.sidebar');
