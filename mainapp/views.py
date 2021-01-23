@@ -26,12 +26,50 @@ def logoutpage(request):
     logout(request)
     return redirect('loginpage')
 
-@authenticated
-def dashboard(request):
+
+# Dashboard
+
+# Student
+
+# Higher Management
+
+def studentDashboard(request):
+    chartName = []
+    chartLabel = []
+    chartDataSet = []
+    
+    chartN = 'Dataset 1'
+    chartL = ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+    chartD = [2, 10, 5, 3, 20, 30, 45]
+    
+    chartName.append(chartN)
+    chartLabel.append(chartL)
+    chartDataSet.append(chartD)
+    
+    chartName.append(chartN)
+    chartLabel.append(chartL)
+    chartDataSet.append(chartD)
+    
+    numberOfGraphs = len(chartName)
+    
     return render(request, 'mainapp/dashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
         'usertype': request.user.groups.all()[0].name,
+        'numberOfGraphs': numberOfGraphs,
+        'chartName': chartName,
+        'chartLabel': chartLabel,
+        'chartDataSet': chartDataSet,
     })
+
+@authenticated
+def dashboard(request):
+    if request.user.groups.exists():
+        group = request.user.groups.all()[0].name
+        
+        if group == 'Student':
+            return studentDashboard(request)
+    
+    
 
 @authenticated
 def dataentry(request):

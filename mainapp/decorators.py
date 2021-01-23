@@ -22,17 +22,17 @@ def unauthenticated(viewFunc):
     return wrapperFunc
     
     
-# def allowedUsers(allowedRoles=[]):
-#     def viewpage(viewFunc):
-#         def wrapperFunc(request, *args, **kwargs):
-#             group = None
-#             if request.user.groups.exists():
-#                 group = request.user.groups.all()[0].name
+def allowedUsers(allowedRoles=[]):
+    def viewpage(viewFunc):
+        def wrapperFunc(request, *args, **kwargs):
+            group = None
+            if request.user.groups.exists():
+                group = request.user.groups.all()[0].name
 
-#             if group in allowedRoles:
-#                 return viewFunc(request, *args, **kwargs)
-#             else:
-#                 return redirect('logoutpage')
+            if group in allowedRoles:
+                return viewFunc(request, *args, **kwargs)
+            else:
+                return redirect('logoutpage')
             
-#         return wrapperFunc
-#     return viewpage
+        return wrapperFunc
+    return viewpage

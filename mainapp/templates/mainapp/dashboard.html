@@ -15,8 +15,8 @@
             <span><b>UGC:</b><br />1</span>
         </div>
     </div>
-    <div class="flex-container blockwise">
-        <div class="box">
+    <div id="inner-section" class="gridwise-container blockwise">
+        {% comment %} <div class="box">
             <div class="chart">
                 <canvas id="chart1" width="300" height="200"></canvas>
             </div>
@@ -26,12 +26,51 @@
                 <canvas id="chart2" width="300" height="200"></canvas>
             </div>
         </div>
+        <div class="box">
+            <div class="chart">
+                <canvas id="chart3" width="300" height="200"></canvas>
+            </div>
+        </div>
+        <div class="box">
+            <div class="chart">
+                <canvas id="chart4" width="300" height="200"></canvas>
+            </div>
+        </div> {% endcomment %}
         <script>
-            var ctx1 = document.getElementById('chart1').getContext('2d');
-            var ctx2 = document.getElementById('chart2').getContext('2d');
+            let numberOfGraphs = {{ numberOfGraphs }};
+            let graphContainer = document.querySelector('#inner-section');
+            {% comment %} let graphHolderList = []; {% endcomment %}
+            
+            chartName = [{% for chartN in chartName %} '{{ chartN }}', {% endfor %}];
+            chartLabel = [{% for chartL in chartLabel %}[ {% for chartT in chartL %} '{{ chartT }}', {% endfor %}], {% endfor %}];
+            chartDataSet = [{% for chartD in chartDataSet %} {{ chartD }}, {% endfor %}];
+            
+            for (let i = 0; i < numberOfGraphs; i++) {
+                let graphHolder = document.createElement('div');
+                graphHolder.className = 'box';
+                graphHolder.innerHTML = `
+                    <div class="box-section-head negative-margin">${chartName[i]}</div>
+                    <div class="chart">
+                        <canvas id="chart${i}" width="300" height="200"></canvas>
+                    </div>
+                `;
+                graphContainer.appendChild(graphHolder);
+                {% comment %} let graphHolders = document.getElementById('chart1').getContext('2d'); {% endcomment %}
+                barChart(graphHolder.children[1].children[0].getContext('2d'), chartName[i], chartLabel[i], chartDataSet[i], '#094480', '#a4b5c7');
+            }
+            
+            
+            
+            
+            {% comment %} let ctx1 = document.getElementById('chart1').getContext('2d');
+            let ctx2 = document.getElementById('chart2').getContext('2d');
+            let ctx3 = document.getElementById('chart3').getContext('2d');
+            let ctx4 = document.getElementById('chart4').getContext('2d');
 
             lineChart(ctx1, 'Sample Dataset 1', ['January', 'February', 'March', 'April', 'May', 'June', 'July'], [2, 10, 5, 3, 20, 30, 45], '#094480', '#d9e2ec');
             lineChart(ctx2, 'Sample Dataset 2', ['January', 'February', 'March', 'April', 'May', 'June', 'July'], [8, 5, 8, 9, 13, 11, 12], '#962323', '#f0cdcd');
+            lineChart(ctx3, 'Sample Dataset 1', ['January', 'February', 'March', 'April', 'May', 'June', 'July'], [2, 10, 5, 3, 20, 30, 45], '#094480', '#d9e2ec');
+            lineChart(ctx4, 'Sample Dataset 2', ['January', 'February', 'March', 'April', 'May', 'June', 'July'], [8, 5, 8, 9, 13, 11, 12], '#962323', '#f0cdcd'); {% endcomment %}
         </script>
     </div>
     

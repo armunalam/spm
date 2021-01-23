@@ -269,6 +269,18 @@ nav.sidebar a.current {
     width: 100%;
 }
 
+.gridwise-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+.negative-margin {
+    margin-top: -20px;
+    margin-left: -20px;
+    margin-right: -20px;
+    margin-bottom: 10px;
+}
+
 .box-item {
     display: grid;
     margin: 5px;
