@@ -10,7 +10,7 @@ def getStudentWisePLO(student_id):
             cursor.execute('''
                 SELECT (PLO / TotalComark * 100) AS PLOpercentage
                 FROM (
-                    SELECT SUM(DISTINCT e.obtainedMarks) AS PLO, SUM(DISTINCT a.marks) AS TotalCoMark
+                    SELECT SUM(DISTINCT e.obtainedMarks) AS PLO, a.marks AS TotalCoMark
                     FROM mainapp_enrollment_t en,
                         mainapp_evaluation_t e,
                         mainapp_assessment_t a,
@@ -40,7 +40,7 @@ def getDepartmentWisePLO():
                 SELECT d.departmentID, AVG(ploPercentages.PLOpercentage)
                 FROM mainapp_department_t d,
                     mainapp_student_t s, (
-                        SELECT student_id, (PLO / TotalComark * 100) AS PLOpercentage
+                        SELECT DISTINCT student_id, (PLO / TotalComark * 100) AS PLOpercentage
                         FROM (
                             SELECT en.student_id, SUM(DISTINCT e.obtainedMarks) AS PLO, SUM(DISTINCT a.marks) AS TotalCoMark
                             FROM mainapp_enrollment_t en,
@@ -50,7 +50,7 @@ def getDepartmentWisePLO():
                                 mainapp_plo_t p
                             WHERE en.enrollmentID = e.enrollment_id
                                 AND e.assessment_id = a.assessmentNo
-                                AND a.co_id = c.coNo
+                                AND a.co_id = c.id
                                 AND c.plo_id = '{}'
                             GROUP BY en.student_id
                         ) ploPer
