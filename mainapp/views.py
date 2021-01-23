@@ -3,7 +3,8 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.http import HttpResponse
 
-from .decorators import authenticated, unauthenticated#, allowedUsers
+from .decorators import authenticated, unauthenticated, allowedUsers
+from .graphQueries import *
     
 @unauthenticated
 def loginpage(request):
@@ -33,18 +34,39 @@ def logoutpage(request):
 
 # Higher Management
 
+@allowedUsers(allowedRoles=['Student'])
 def studentDashboard(request):
+    
     chartName = []
     chartLabel = []
     chartDataSet = []
     
-    chartN = 'Dataset 1'
-    chartL = ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-    chartD = [2, 10, 5, 3, 20, 30, 45]
+    
+    
+    
+    chartN = 'Student-wise PLO'
+    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    
+    row = getStudentWisePLO('1625654')
+    
+    for i in row:
+        chartL.append(i[1])
+        chartD.append(i[0])
     
     chartName.append(chartN)
     chartLabel.append(chartL)
     chartDataSet.append(chartD)
+    
+    chartN = 'Department-wise PLO'
+    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    
+    row = getDepartmentWisePLO()
+    
+    for i in row:
+        chartL.append(i[1])
+        chartD.append(i[2])
     
     chartName.append(chartN)
     chartLabel.append(chartL)
