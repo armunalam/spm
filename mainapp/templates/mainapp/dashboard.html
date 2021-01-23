@@ -73,6 +73,54 @@
             lineChart(ctx4, 'Sample Dataset 2', ['January', 'February', 'March', 'April', 'May', 'June', 'July'], [8, 5, 8, 9, 13, 11, 12], '#962323', '#f0cdcd'); {% endcomment %}
         </script>
     </div>
+    <div class="flex-container blockwise">
+        <div class="box-section">
+            <div class="box-section-head">PLO Achievement Table</div>
+            <div class="box-section-body">
+                {% comment %} <p>The following is a sample placeholder table for the template.</p> {% endcomment %}
+                <div class="table-responsive marg-bottom marg-top">
+                    <table class="table table-bordered table-striped table-sm" style="text-align: center;">
+                        <thead>
+                            <tr>
+                                <th>COURSE</th>
+                                <th>PLO01</th>
+                                <th>PLO02</th>
+                                <th>PLO03</th>
+                                <th>PLO04</th>
+                                <th>PLO05</th>
+                                <th>PLO06</th>
+                                <th>PLO07</th>
+                                <th>PLO08</th>
+                                <th>PLO09</th>
+                                <th>PLO10</th>
+                                <th>PLO11</th>
+                                <th>PLO12</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for ploT in ploTable %}
+                                <tr>
+                                    {% for ploNT in ploT %}
+                                        <td class="ploValues">{{ ploNT }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            <script>
+                                let ploValues = document.querySelectorAll('td.ploValues');
+                                for(let i = 0; i < ploValues.length; i++) {
+                                    
+                                    if (ploValues[i].textContent.slice(0, ploValues[i].textContent.length - 2) >= 40)
+                                        ploValues[i].style = 'color: green;';
+                                    if (ploValues[i].textContent.slice(0, ploValues[i].textContent.length - 2) < 40)
+                                        ploValues[i].style = 'color: red;';
+                                }
+                            </script>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
     
     <script>
         highlightCurrentPage('dashboard');

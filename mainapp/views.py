@@ -48,7 +48,9 @@ def studentDashboard(request):
     chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
     chartD = [] # [2, 10, 5, 3, 20, 30, 45]
     
-    row = getStudentWisePLO('1625654')
+    student_id = '1625654'
+    
+    row = getStudentWisePLO(student_id)
     
     for i in row:
         chartL.append(i[1])
@@ -74,6 +76,11 @@ def studentDashboard(request):
     
     numberOfGraphs = len(chartName)
     
+    # Table
+    
+    ploTable = getCourseWisePLO(student_id)
+    
+    
     return render(request, 'mainapp/dashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
         'usertype': request.user.groups.all()[0].name,
@@ -81,6 +88,7 @@ def studentDashboard(request):
         'chartName': chartName,
         'chartLabel': chartLabel,
         'chartDataSet': chartDataSet,
+        'ploTable': ploTable,
     })
 
 @authenticated
