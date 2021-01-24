@@ -2,9 +2,10 @@
 {% block title %}Data Entry{% endblock %}
 {% block body %}
     <div class="flex-container blockwise">
+        <!--CO Mapping-->
         <div class="box-section">
-            <div class="box-section-head">Data Entry</div>
-            <div class="box-section-body">
+            <div class="box-section-head">PLO to CO Mapping</div>
+            <div id="coMapping" class="box-section-body">
                 <!-- <p>The following is a sample placeholder form for the template.</p> -->
                 <form class="marg-top marg-bottom">
                     <!-- <div class="form-group">
@@ -19,67 +20,270 @@
                                 <label for="full-name">Full Name</label>
                             </td> -->
                             <td class="form-field">
-                                <input type="text" id="first-name" class="form-control" placeholder="First Name" />
+                                <datalist id="course-id">
+                                    {% for i in courses %}<option value="{{ i }}" />{% endfor %}
+                                </datalist>
+                                <input type="text" id="course-id" name="course-id" list="course-id" class="form-control" placeholder="Course ID" />
                             </td>
                             <td class="form-field">
-                                <input type="text" id="last-name" class="form-control" placeholder="Last Name" />
+                                <input type="text" id="noOfCO" class="form-control" placeholder="Number of COs to be mapped" />
                             </td>
-                        <!-- </tr>
+                            
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;" class="last-row" colspan="2"><button class="btn btn-primary" onclick="submitCONo(); return false;">Submit</button></td>
+                        </tr>
                         
-                        <tr> -->
-                            <!-- <td>
-                                <label for="last-name">Last Name</label>
-                            </td>
-                            <td>
-                                <input type="text" id="last-name" class="form-control" />
-                            </td> -->
-                        </tr>
-                        <tr>
-                            <!-- <td>
-                                <label for="email">Email Address</label>
-                            </td> -->
-                            <td>
-                                <input type="email" id="email" class="form-control" placeholder="Email Address" />
-                            </td>
-                            <td>
-                                <input type="tel" id="mobile-number" class="form-control" placeholder="Mobile Number" />
-                            </td>
-                            <!-- <td>
-                                <label for="username">New Username</label>
-                            </td> -->
-                        </tr>
-                        <tr>
-                            <td>
-                                <input type="text" id="dept" class="form-control" placeholder="Department" />
-                            </td>
-                            <td>
-                                <input type="text" id="major" class="form-control" placeholder="Major" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2">
-                                <input type="text" id="username" class="form-control" placeholder="New Username" autocomplete="username" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <!-- <td>
-                                <label for="password">New Password</label>
-                            </td> -->
-                            <td>
-                                <input type="password" id="password" class="form-control" placeholder="New Password" autocomplete="new-password" />
-                            </td>
-                            <!-- <td>
-                                <label for="password-confirm">Confirm Password</label>
-                            </td> -->
-                            <td>
-                                <input type="password" id="password-confirm" class="form-control" placeholder="Confirm Password" />
-                            </td>
-                        </tr>
-                        <tr>
-                            <td style="text-align: center;" class="last-row" colspan="2"><button class="btn btn-primary">Sign up</button></td>
-                        </tr>
                     </table>
                 </form>
+                <form id="mappingSection" class="marg-top marg-bottom" action="{% url 'mapping' %}" method="post"></form>
+                <script>
+                    function submitCONo() {
+                        let courseID = document.querySelector('input#course-id').value;
+                        let noOfCO = document.querySelector('input#noOfCO').value;
+                        
+                        let mappingSection = document.querySelector('#mappingSection');
+                        mappingSection.innerHTML = '';
+                        
+                        let formTable = document.createElement('table');
+                        formTable.className = 'form-table';
+                        formTable.innerHTML = `
+                            {% csrf_token %}
+                            <input type="hidden" name="course-id" value="${courseID}" />
+                        `;
+                        for (let i = 0; i < parseInt(noOfCO); i++) {
+                            
+                            let inputForm = document.createElement('tr')
+                            inputForm.innerHTML = `
+                                    <td class="form-field" style="width: 120px;">
+                                        <label style="margin-right: 0px;" for="mapping${i + 1}" id="mappinglabel${i + 1}"><b>CO${i + 1}</b> maps to</label>
+                                    </td>
+                                    <td class="form-field" style="width: 110px;">
+                                        {% comment %} <input type="text" id="mapping${i + 1}" name="mapping${i + 1}" class="form-control" placeholder="Number of COs to be mapped" /> {% endcomment %}
+                                        <select class="form-control" id="coMaps" name="coMaps">
+                                            <option value="PLO01">PLO01</option>
+                                            <option value="PLO02">PLO02</option>
+                                            <option value="PLO03">PLO03</option>
+                                            <option value="PLO04">PLO04</option>
+                                            <option value="PLO05">PLO05</option>
+                                            <option value="PLO06">PLO06</option>
+                                            <option value="PLO07">PLO07</option>
+                                            <option value="PLO08">PLO08</option>
+                                            <option value="PLO09">PLO09</option>
+                                            <option value="PLO10">PLO10</option>
+                                            <option value="PLO11">PLO11</option>
+                                            <option value="PLO12">PLO12</option>
+                                        </select>
+                                    </td>
+                                    {% comment %} <td class="form-field" style="width: 150px;">
+                                        <input type="text" id="coMark${i + 1}" name="coMarks" class="form-control" placeholder="Total Mark" />
+                                    </td> {% endcomment %}
+                            `;
+                            formTable.appendChild(inputForm);
+                        }
+                        let inputButton = document.createElement('tr');
+                        inputButton.innerHTML = `<td style="text-align: center;" class="last-row" colspan="2"><button class="btn btn-primary">Submit Mapping</button></td>`;
+                        
+                        formTable.appendChild(inputButton);
+                        mappingSection.appendChild(formTable); 
+                        return false;
+                        
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+    <div class="flex-container blockwise">
+        <!--Add Assessment-->
+        <div class="box-section">
+            <div class="box-section-head">Assessment Data Entry</div>
+            <div id="coMapping" class="box-section-body">
+                <form class="marg-top marg-bottom">
+                    <table class="form-table">
+                        <tr>
+                            <!-- <td>
+                                <label for="full-name">Full Name</label>
+                            </td> -->
+                            <td class="form-field">
+                                <datalist id="course-id-assessment-list">
+                                    {% for i in courses %}<option value="{{ i }}" />{% endfor %}
+                                </datalist>
+                                <input list="course-id-assessment-list" id="course-id-assessment" name="course-id-assessment" class="form-control" placeholder="Course ID" />
+                                
+                            </td>
+                            <td class="form-field">
+                                {% comment %} <select class="form-control" id="section-id-assessment" name="section-id-assessment">
+                                            
+                                    <option style="display: none;" value="" disabled selected>Semester</option>
+                                    <option value="1">Spring</option>
+                                    <option value="2">Summer</option>
+                                    <option value="3">Autumn</option>
+                                </select> {% endcomment %}
+                                <input type="text" class="form-control" id="section-id-assessment" placeholder="Section" name="section-id-assessment" />
+                            </td>
+                            <td class="form-field">
+                                <input type="text" id="noOfCOs-assessment" class="form-control" placeholder="Number of COs" />
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;" class="last-row" colspan="3"><button class="btn btn-primary" onclick="createAssessment(); return false;">Submit</button></td>
+                        </tr>
+                        
+                    </table>
+                </form>
+                <form id="assessmentSection" class="marg-top marg-bottom" action="{% url 'assessment' %}" method="post"></form>
+                <script>
+                    function createAssessment() {
+                        let courseName = document.querySelector('input#course-id-assessment').value;
+                        let noOfCOs = document.querySelector('input#noOfCOs-assessment').value;
+                        let section = document.querySelector('input#section-id-assessment').value;
+                        
+                        let assessmentSection = document.querySelector('#assessmentSection');
+                        assessmentSection.innerHTML = '';
+                        
+                        let formTable = document.createElement('table');
+                        formTable.className = 'form-table';
+                        formTable.innerHTML = `
+                            {% csrf_token %}
+                            <input type="hidden" name="course-id" value="${courseName}" />
+                            <input type="hidden" name="section" value="${section}" />
+                        `;
+                        for (let i = 0; i < parseInt(noOfCOs); i++) {
+                            
+                            let inputForm = document.createElement('tr')
+                            inputForm.innerHTML = `
+                                    <td class="form-field" style="width: 120px;">
+                                        <label style="margin-right: 0px;" for="co-assessment-mark${i + 1}" id="co-assessment-label${i + 1}"><b>CO${i + 1}</b> worths</label>
+                                    </td>
+                                    {% comment %} <td class="form-field" style="width: 110px;"> {% endcomment %}
+                                        {% comment %} <input type="text" id="co-assessment-mark${i + 1}" name="co-assessment-mark${i + 1}" class="form-control" placeholder="Number of COs to be mapped" /> {% endcomment %}
+                                        {% comment %} 
+                                        
+                                    </td> {% endcomment %}
+                                    <td class="form-field" style="width: 150px;">
+                                        <input type="text" id="coMark${i + 1}" name="coMarks" class="form-control" placeholder="Total Mark" />
+                                    </td>
+                            `;
+                            formTable.appendChild(inputForm);
+                        }
+                        let inputButton = document.createElement('tr');
+                        inputButton.innerHTML = `<td style="text-align: center;" class="last-row" colspan="2"><button class="btn btn-primary">Submit Assessment</button></td>`;
+                        
+                        formTable.appendChild(inputButton);
+                        assessmentSection.appendChild(formTable); 
+                        return false;
+                        
+                    }
+                </script>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex-container blockwise">
+        <!--Add Evaluation-->
+        <div class="box-section">
+            <div class="box-section-head">Evaluation Data Entry</div>
+            <div id="coMapping" class="box-section-body">
+                <form class="marg-top marg-bottom">
+                    <table class="form-table">
+                        <tr>
+                            <!-- <td>
+                                <label for="full-name">Full Name</label>
+                            </td> -->
+                            <td class="form-field">
+                                <datalist id="course-id-evaluation-list">
+                                    {% for i in courses %}<option value="{{ i }}" />{% endfor %}
+                                </datalist>
+                                <input list="course-id-evaluation-list" id="course-id-evaluation" name="course-id-evaluation" class="form-control" placeholder="Course ID" />
+                                
+                            </td>
+                            <td class="form-field">
+                                <input type="text" class="form-control" id="section-id-evaluation" placeholder="Section" name="section-id-evaluation" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-field">
+                                <select class="form-control" id="semester-evaluation" name="semester-evaluation">      
+                                    <option style="display: none;" value="" disabled selected>Semester</option>
+                                    <option value="1">Spring</option>
+                                    <option value="2">Summer</option>
+                                    <option value="3">Autumn</option>
+                                </select>
+                            </td>
+                            <td class="form-field">
+                                <input type="text" id="year-evaluation" class="form-control" placeholder="Year" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="form-field">
+                                <input type="text" id="noOfStudents-evaluation" class="form-control" placeholder="Number of Students" />
+                            </td>
+                            <td class="form-field">
+                                <input type="text" id="noOfCOs-evaluation" class="form-control" placeholder="Number of COs" />
+                            </td>
+                            
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;" class="last-row" colspan="3"><button class="btn btn-primary" onclick="createEvaluation(); return false;">Submit</button></td>
+                        </tr>
+                        
+                    </table>
+                </form>
+                <form id="evaluationSection" class="marg-top marg-bottom" action="{% url 'evaluation' %}" method="post"></form>
+                <script>
+                    function createEvaluation() {
+                        let courseName = document.querySelector('input#course-id-evaluation').value;
+                        let noOfStudents = document.querySelector('input#noOfStudents-evaluation').value;
+                        let noOfCOs = document.querySelector('input#noOfCOs-evaluation').value;
+                        let section = document.querySelector('input#section-id-evaluation').value;
+                        let semester = document.querySelector('select#semester-evaluation').value;
+                        let year = document.querySelector('input#year-evaluation').value;
+                        
+                        let evaluationSection = document.querySelector('#evaluationSection');
+                        evaluationSection.innerHTML = '';
+                        
+                        let formTable = document.createElement('table');
+                        formTable.className = 'form-table';
+                        formTable.innerHTML = `
+                            {% csrf_token %}
+                            <input type="hidden" name="course-id" value="${courseName}" />
+                            <input type="hidden" name="section" value="${section}" />
+                            <input type="hidden" name="semester" value="${semester}" />
+                            <input type="hidden" name="year" value="${year}" />
+                        `;
+                        for (let i = 0; i < parseInt(noOfStudents); i++) {
+                            
+                            let inputForm = document.createElement('table')
+                            inputForm.className = 'form-table';
+                            let inputFormInnerHTML = `
+                                <tr>
+                                    <td class="form-field"" colspan="2"><input type="text" id="student${i + 1}" name="student_id" class="form-control" placeholder="Student ID" /></td>
+                                </tr>
+                            `;
+                            for (let j = 0; j < parseInt(noOfCOs); j++) {
+                                inputFormInnerHTML += `
+                                    <tr>
+                                        <td class="form-field" style="width: 60px;"><label style="margin-right: 0px;" for="co-assessment-mark${j + 1}" id="co-assessment-label${i + 1}"><b>CO${j + 1}</b>: </label></td>
+                                        <td class="form-field"><input type="text" id="coMark${i + 1}-${j + 1}" name="coMarks${i}" class="form-control" placeholder="Mark Obtained" /></td>
+                                    </tr>
+                                `;
+                            }
+                            inputFormInnerHTML += '<br />';
+                            inputForm.innerHTML = inputFormInnerHTML;    
+                            
+                            ;
+                            formTable.appendChild(inputForm);
+                        }
+                        let inputButton = document.createElement('tr');
+                        inputButton.innerHTML = `<td style="text-align: center;" class="last-row" colspan="2"><button class="btn btn-primary">Submit Evaluation</button></td>`;
+                        
+                        formTable.appendChild(inputButton);
+                        evaluationSection.appendChild(formTable); 
+                        return false;
+                        
+                    }
+                </script>
             </div>
         </div>
     </div>

@@ -44,6 +44,9 @@ class Course_T(models.Model):
     noOfCredits = models.IntegerField()
     program = models.ForeignKey(Program_T, on_delete=models.CASCADE)
     
+    def __str__(self):
+        return self.courseID
+    
 class PLO_T(models.Model):
     ploNo = models.CharField(max_length=5, primary_key=True)
     program = models.ForeignKey(Program_T, on_delete=models.CASCADE)
