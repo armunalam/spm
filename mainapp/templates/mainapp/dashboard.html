@@ -59,7 +59,7 @@
                 barChart(graphHolder.children[1].children[0].getContext('2d'), chartName[i], chartLabel[i], chartDataSet[i], '#094480', '#a4b5c7');
             }
             
-            {% comment %} # getStudentProgressView {% endcomment %}
+            // getStudentProgressView
             graphHolder = document.createElement('div');
             let semester = [{% for i in semester %} '{{ i }}', {% endfor %}];
             let semesterActual = {{ semesterActual }};
@@ -85,6 +85,48 @@
             }];
             {% comment %} let graphHolders = document.getElementById('chart1').getContext('2d'); {% endcomment %}
             lineChartObject(graphHolder.children[1].children[0].getContext('2d'), semester, chartObjects);
+            
+            
+            // getStudentProgressView
+            let graphContainer2 = document.querySelector('#inner-section');
+            let graphHolder2 = document.createElement('div');
+            let semester2 = [{% for i in semester2 %} '{{ i }}', {% endfor %}];
+            let semesterActualCourse = {{ semesterActualCourse }};
+            let semesterAttemptedCourse = {{ semesterAttemptedCourse }};
+            graphHolder2.className = 'box';
+            graphHolder2.innerHTML = `
+                <div class="box-section-head negative-margin">{{ courseProgressView }}</div>
+                <div class="chart">
+                    <canvas id="chartSemester" width="300" height="200"></canvas>
+                </div>
+            `;
+            graphContainer2.appendChild(graphHolder2);
+            
+            colorpalette = ['blue', 'red', 'green', 'orange', 'yellow', '#990011FF', 'purple', 'violet', 'brown', 'cyan', 'magenta', 'lime']
+            chartObjects = []
+            for (let i = 0; i < 12; i++) {
+                let l = `PLO0${i + 1}`
+                if (i + 1 >= 10) {
+                    l = `PLO${i + 1}`
+                }
+                    
+                chartObjects.push({
+                    label: l,
+                    backgroundColor: 'white',
+                    borderColor: colorpalette[i],
+                    data: semesterActualCourse[i]
+                });
+            }
+            chartObjects.push({
+                label: 'Overall',
+                backgroundColor: 'white',
+                borderColor: 'black',
+                data: semesterAttemptedCourse
+            });
+            {% comment %} let graphHolders = document.getElementById('chart1').getContext('2d'); {% endcomment %}
+            lineChartObject(graphHolder2.children[1].children[0].getContext('2d'), semester, chartObjects);
+            
+            
         
             
             {% comment %} let ctx1 = document.getElementById('chart1').getContext('2d');
@@ -121,7 +163,6 @@
                 return '#' + hex;
             });
             for (let i = 0; i < courses.length; i++) {
-                
                 datasetlist.push({
                     label: courses[i],
                     data: table[i],
@@ -226,6 +267,49 @@
                                 <tr>
                                     {% for ploNT in ploT %}
                                         <td class="ploValues">{{ ploNT }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            <script>
+                                let ploValues = document.querySelectorAll('td.ploValues');
+                                for(let i = 0; i < ploValues.length; i++) {
+                                    
+                                    if (ploValues[i].textContent.slice(0, ploValues[i].textContent.length - 2) >= 40)
+                                        ploValues[i].style = 'color: green;';
+                                    if (ploValues[i].textContent.slice(0, ploValues[i].textContent.length - 2) < 40)
+                                        ploValues[i].style = 'color: red;';
+                                }
+                            </script>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="flex-container blockwise">
+        <div class="box-section">
+            <div class="box-section-head">Course Verdict Table</div>
+            <div class="box-section-body">
+                {% comment %} <p>The following is a sample placeholder table for the template.</p> {% endcomment %}
+                <p><b>Number of Students:</b> {{ verdictTotal }}</p>
+                <div class="table-responsive marg-bottom">
+                    <table class="table table-bordered table-striped table-sm" style="text-align: center;">
+                        <thead>
+                            <tr>
+                                <th>CO</th>
+                                <th>PLO</th>
+                                <th>Successfully Achieved</th>
+                                <th>Successful Percentage (%)</th>
+                                <th>Failed to Achieve</th>
+                                <th>Failed Percentage (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vr in verdictRow %}
+                                <tr>
+                                    {% for i in vr %}
+                                        <td class="ploValues">{{ i }}</td>
                                     {% endfor %}
                                 </tr>
                             {% endfor %}

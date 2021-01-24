@@ -95,6 +95,11 @@ def studentDashboard(request):
     # getSemesterWiseProgress
     (plo2, programActualOverall, programAttemptedOverall) = getProgramAchievement('BSc')
     
+    # getCourseProgressView
+    (semester2, semesterActualCourse, semesterAttemptedCourse) = getCourseProgressView('CSE303', '2019')
+    
+    # getVerdictTable(course_id)
+    (verdictRow, verdictTotal) = getVerdictTable('CSE303')
     
     return render(request, 'mainapp/dashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
@@ -128,6 +133,16 @@ def studentDashboard(request):
         'programActualOverall': programActualOverall,
         'programAttemptedOverall': programAttemptedOverall,
         'programProgressView': 'Program Progress View',
+    
+        # getCourseProgressView
+        'semester2': semester2,
+        'semesterActualCourse': semesterActualCourse,
+        'semesterAttemptedCourse': semesterAttemptedCourse,
+        'courseProgressView': 'Course Progress View',
+        
+        # getVerdictTable
+        'verdictRow': verdictRow,
+        'verdictTotal': verdictTotal,
     })
     
 
