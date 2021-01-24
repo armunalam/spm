@@ -226,3 +226,239 @@ def getCourseWisePLOChart(student_id):
     return (plo, courses, table)
 
 
+def getStudentProgressView(student_id, year):
+    plo = ['PLO01', 'PLO02', 'PLO03', 'PLO04', 'PLO05', 'PLO06', 'PLO07', 'PLO08', 'PLO09', 'PLO10', 'PLO11', 'PLO12']
+    semesterActual = []
+    semesterAttempted = []
+    for i in range(3):
+        counterActual = 0
+        counterAttempted = 0
+        for j in plo:
+            with connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT COUNT(Acheived.ActualPlo) AS PLoacheivedornot
+                    FROM(
+                        SELECT AVG(TotalPlo.PLOpercentage) AS ActualPlo
+                        FROM (
+                            SELECT (PLO / TotalComark * 100) AS PLOpercentage
+                            FROM (
+                                SELECT SUM(DISTINCT e.obtainedMarks) AS PLO, SUM(DISTINCT a.marks) AS TotalCoMark
+                                FROM mainapp_enrollment_t en,
+                                        mainapp_evaluation_t e,
+                                        mainapp_assessment_t a,
+                                        mainapp_co_t c,
+                                        mainapp_plo_t p
+                                WHERE en.student_id = '{}'
+                                    AND en.semester = '{}'
+                                    AND en.year = '{}'
+                                    AND en.enrollmentID = e.enrollment_id
+                                    AND e.assessment_id = a.assessmentNo
+                                    AND a.co_id = c.id
+                                    AND c.plo_id = '{}'
+                                GROUP BY en.semester
+                            ) ploPer
+                        ) TotalPlo
+                    ) Acheived
+                    WHERE Acheived.ActualPlo >=40;
+                '''.format(student_id, i + 1, year, j))
+                temp = cursor.fetchall()
+                if temp is not None:
+                    row = temp
+                    if row[0][0] > 0:
+                        counterActual += 1
+            
+            with connection.cursor() as cursor:
+                cursor.execute('''
+                    SELECT COUNT(Acheived.ActualPlo) AS PLoacheivedornot
+                    FROM(
+                        SELECT AVG(TotalPlo.PLOpercentage) AS ActualPlo
+                        FROM (
+                            SELECT (PLO / TotalComark * 100) AS PLOpercentage
+                            FROM (
+                                SELECT SUM(DISTINCT e.obtainedMarks) AS PLO, SUM(DISTINCT a.marks) AS TotalCoMark
+                                FROM mainapp_enrollment_t en,
+                                        mainapp_evaluation_t e,
+                                        mainapp_assessment_t a,
+                                        mainapp_co_t c,
+                                        mainapp_plo_t p
+                                WHERE en.student_id = '{}'
+                                    AND en.semester = '{}'
+                                    AND en.year = '{}'
+                                    AND en.enrollmentID = e.enrollment_id
+                                    AND e.assessment_id = a.assessmentNo
+                                    AND a.co_id = c.id
+                                    AND c.plo_id = '{}'
+                                GROUP BY en.semester
+                            ) ploPer
+                        ) TotalPlo
+                    ) Acheived
+                '''.format(student_id, i + 1, year, j))
+                temp = cursor.fetchall()
+                if temp is not None:
+                    row = temp
+                    if row[0][0] > 0:
+                        counterAttempted += 1
+        semesterActual.append(counterActual)
+        semesterAttempted.append(counterAttempted)
+    
+    semester = ['Spring', 'Summer', 'Autumn']
+    return (semester, semesterActual, semesterAttempted)
+        
+def getSemesterWiseStudentProgress(semester, year):
+    plo = ['PLO01', 'PLO02', 'PLO03', 'PLO04', 'PLO05', 'PLO06', 'PLO07', 'PLO08', 'PLO09', 'PLO10', 'PLO11', 'PLO12']
+    semesterActual = []
+    semesterAttempted = []
+    row = []
+    # for i in range(3):
+    #     counterActual = 0
+    #     counterAttempted = 0
+    for j in plo:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT COUNT(Acheived.ActualPlo)
+                    FROM (
+                            SELECT AVG(TotalPlo.PLOpercentage) AS ActualPlo
+                            FROM (
+                                    SELECT student_id,(PLO / TotalComark * 100) AS PLOpercentage
+                                    FROM (
+                                            SELECT  en.student_id,SUM( e.obtainedMarks) AS PLO, SUM( a.marks) AS TotalCoMark
+                                            FROM mainapp_enrollment_t en,
+                                                    mainapp_evaluation_t e,
+                                                    mainapp_assessment_t a,
+                                                    mainapp_co_t c,
+                                                    mainapp_plo_t p
+                                            WHERE en.enrollmentID = e.enrollment_id
+                                                AND en.semester = '{}'
+                                                AND en.year = '{}'
+                                                AND e.assessment_id = a.assessmentNo
+                                                AND a.co_id = c.id
+                                                AND c.plo_id = '{}'
+                                            GROUP BY en.student_id
+                                        ) ploPer
+                                GROUP BY student_id
+                                ) TotalPlo
+                    GROUP BY student_id
+                        ) Acheived
+                    WHERE Acheived.ActualPlo >= 40;
+            '''.format(semester, year, j))
+            row = cursor.fetchall()
+            if row is None:
+                row = []
+            semesterActual.append(row[0][0])
+                
+        row = []
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT COUNT(Acheived.ActualPlo)
+                    FROM (
+                            SELECT AVG(TotalPlo.PLOpercentage) AS ActualPlo
+                            FROM (
+                                    SELECT student_id,(PLO / TotalComark * 100) AS PLOpercentage
+                                    FROM (
+                                            SELECT  en.student_id,SUM( e.obtainedMarks) AS PLO, SUM( a.marks) AS TotalCoMark
+                                            FROM mainapp_enrollment_t en,
+                                                    mainapp_evaluation_t e,
+                                                    mainapp_assessment_t a,
+                                                    mainapp_co_t c,
+                                                    mainapp_plo_t p
+                                            WHERE en.enrollmentID = e.enrollment_id
+                                                AND en.semester = '{}'
+                                                AND en.year = '{}'
+                                                AND e.assessment_id = a.assessmentNo
+                                                AND a.co_id = c.id
+                                                AND c.plo_id = '{}'
+                                            GROUP BY en.student_id
+                                        ) ploPer
+                                GROUP BY student_id
+                                ) TotalPlo
+                    GROUP BY student_id
+                        ) Acheived
+            '''.format(semester, year, j))
+            row = cursor.fetchall()
+            if row is None:
+                row = []
+            semesterAttempted.append(row[0][0])
+    
+    return (plo, semesterActual, semesterAttempted)
+    
+    
+def getProgramAchievement(prog):
+    plo = ['PLO01', 'PLO02', 'PLO03', 'PLO04', 'PLO05', 'PLO06', 'PLO07', 'PLO08', 'PLO09', 'PLO10', 'PLO11', 'PLO12']
+    semesterActual = []
+    semesterAttempted = []
+    row = []
+    # for i in range(3):
+    #     counterActual = 0
+    #     counterAttempted = 0
+    for j in plo:
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT COUNT(Acheived.ActualPlo)
+                FROM (
+                        SELECT AVG(TotalPlo.PLOpercentage) AS ActualPlo
+                        FROM (
+                                SELECT student_id,(PLO / TotalComark * 100) AS PLOpercentage
+                                FROM (
+                                        SELECT  en.student_id,SUM(DISTINCT e.obtainedMarks) AS PLO, SUM(DISTINCT a.marks) AS TotalCoMark
+                                        FROM mainapp_enrollment_t en,
+                                                mainapp_evaluation_t e,
+                                                mainapp_assessment_t a,
+                                                mainapp_co_t c,
+                                                mainapp_plo_t p,
+                                                mainapp_program_t pr
+                                        WHERE p.program_id = pr.programID
+                                            AND pr.programID = '{}'
+                                            AND en.enrollmentID = e.enrollment_id
+                                            AND e.assessment_id = a.assessmentNo
+                                            AND a.co_id = c.id
+                                            AND c.plo_id = '{}'
+                                        GROUP BY en.student_id
+                                    ) ploPer
+                            GROUP BY student_id
+                            ) TotalPlo
+                GROUP BY student_id
+                    ) Acheived
+                WHERE Acheived.ActualPlo >= 40;
+            '''.format(prog, j))
+            row = cursor.fetchall()
+            if row is None:
+                row = []
+            semesterActual.append(row[0][0])
+                
+        row = []
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT COUNT(Acheived.ActualPlo)
+                FROM (
+                        SELECT AVG(TotalPlo.PLOpercentage) AS ActualPlo
+                        FROM (
+                                SELECT student_id,(PLO / TotalComark * 100) AS PLOpercentage
+                                FROM (
+                                        SELECT  en.student_id,SUM(DISTINCT e.obtainedMarks) AS PLO, SUM(DISTINCT a.marks) AS TotalCoMark
+                                        FROM mainapp_enrollment_t en,
+                                                mainapp_evaluation_t e,
+                                                mainapp_assessment_t a,
+                                                mainapp_co_t c,
+                                                mainapp_plo_t p,
+                                                mainapp_program_t pr
+                                        WHERE p.program_id = pr.programID
+                                            AND pr.programID = '{}'
+                                            AND en.enrollmentID = e.enrollment_id
+                                            AND e.assessment_id = a.assessmentNo
+                                            AND a.co_id = c.id
+                                            AND c.plo_id = '{}'
+                                        GROUP BY en.student_id
+                                    ) ploPer
+                            GROUP BY student_id
+                            ) TotalPlo
+                GROUP BY student_id
+                    ) Acheived
+            '''.format(prog, j))
+            row = cursor.fetchall()
+            if row is None:
+                row = []
+            semesterAttempted.append(row[0][0])
+    
+    return (plo, semesterActual, semesterAttempted)
+    
+    

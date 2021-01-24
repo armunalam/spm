@@ -59,8 +59,33 @@
                 barChart(graphHolder.children[1].children[0].getContext('2d'), chartName[i], chartLabel[i], chartDataSet[i], '#094480', '#a4b5c7');
             }
             
-            
-            
+            {% comment %} # getStudentProgressView {% endcomment %}
+            graphHolder = document.createElement('div');
+            let semester = [{% for i in semester %} '{{ i }}', {% endfor %}];
+            let semesterActual = {{ semesterActual }};
+            let semesterAttempted = {{ semesterAttempted }};
+            graphHolder.className = 'box';
+            graphHolder.innerHTML = `
+                <div class="box-section-head negative-margin">{{ studentProgressView }}</div>
+                <div class="chart">
+                    <canvas id="chartSemester" width="300" height="200"></canvas>
+                </div>
+            `;
+            graphContainer.appendChild(graphHolder);
+            chartObjects = [{
+                label: 'Actual',
+                backgroundColor: '#d9e2ec',
+                borderColor: '#094480',
+                data: semesterActual
+            }, {
+                label: 'Expected',
+                backgroundColor: '#f0cdcd',
+                borderColor: '#962323',
+                data: semesterAttempted
+            }];
+            {% comment %} let graphHolders = document.getElementById('chart1').getContext('2d'); {% endcomment %}
+            lineChartObject(graphHolder.children[1].children[0].getContext('2d'), semester, chartObjects);
+        
             
             {% comment %} let ctx1 = document.getElementById('chart1').getContext('2d');
             let ctx2 = document.getElementById('chart2').getContext('2d');
@@ -104,10 +129,72 @@
                     {% comment %} backgroundColor: colors[i] {% endcomment %}
                 });
             }
-            console.log(plo);
-            console.log(datasetlist);
             
-            stackedChart(graphHolder.children[1].children[0].getContext('2d'), plo, datasetlist);
+            stackedChart(graphHolder.children[1].children[0].getContext('2d'), plo, datasetlist, true);
+        </script>
+    </div>
+    <div id="testID2" class="flex-container blockwise">
+        <script>
+            graphContainer = document.querySelector('#testID2');
+            plo1 = [{% for i in plo1 %} '{{ i }}', {% endfor %}];
+            courses = [{% for i in courses %} '{{ i }}', {% endfor %}];
+            graphHolder = document.createElement('div');
+            graphHolder.className = 'box';
+            graphHolder.innerHTML = `
+                <div class="box-section-head negative-margin">{{ semesterProgressView }}</div>
+                <div class="chart marg-top">
+                    <canvas id="chartPLO" style="width: 100%; height: 90%;" width="1000" height="500"></canvas>
+                </div>
+            `;
+            graphContainer.appendChild(graphHolder);
+            
+            {% comment %} colors = ['#22aa99', '#994499', '#316395', '#b82e2e', '#66aa00', '#dd4477'] {% endcomment %}
+            colors = palette('tol', courses.length).map(function(hex) {
+                return '#' + hex;
+            });
+            
+            datasetlist = [{
+                label: 'Target',
+                data: {{ semesterAttemptedOverall }},
+                backgroundColor: '#094480'
+                
+            }, {
+                label: 'Actual',
+                data: {{ semesterActualOverall }},
+                backgroundColor: '#962323'
+            }];
+            
+            stackedChart(graphHolder.children[1].children[0].getContext('2d'), plo1, datasetlist, false);
+        </script>
+    </div>
+    <div id="testID3" class="flex-container blockwise">
+        <script>
+            graphContainer = document.querySelector('#testID3');
+            plo2 = [{% for i in plo2 %} '{{ i }}', {% endfor %}];
+            graphHolder = document.createElement('div');
+            graphHolder.className = 'box';
+            graphHolder.innerHTML = `
+                <div class="box-section-head negative-margin">{{ programProgressView }}</div>
+                <div class="chart marg-top">
+                    <canvas id="chartPLO" style="width: 100%; height: 90%;" width="1000" height="500"></canvas>
+                </div>
+            `;
+            graphContainer.appendChild(graphHolder);
+            
+            
+            
+            datasetlist = [{
+                label: 'Target',
+                data: {{ programAttemptedOverall }},
+                backgroundColor: '#094480'
+                
+            }, {
+                label: 'Actual',
+                data: {{ programActualOverall }},
+                backgroundColor: '#962323'
+            }];
+            
+            stackedChart(graphHolder.children[1].children[0].getContext('2d'), plo2, datasetlist, false);
         </script>
     </div>
     <div class="flex-container blockwise">

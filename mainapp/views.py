@@ -48,7 +48,8 @@ def studentDashboard(request):
     chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
     chartD = [] # [2, 10, 5, 3, 20, 30, 45]
     
-    student_id = '1625654'
+    # student_id = '1625654'
+    student_id = '1665555'
     
     row = getStudentWisePLO(student_id)
     
@@ -83,6 +84,15 @@ def studentDashboard(request):
     # Stacked PLO Chart
     (plo, courses, table) = getCourseWisePLOChart(student_id)
     
+    # getStudentProgressView
+    (semester, semesterActual, semesterAttempted) = getStudentProgressView(student_id, 2019)
+    
+    # getSemesterWiseProgress
+    (plo1, semesterActualOverall, semesterAttemptedOverall) = getSemesterWiseStudentProgress('2', 2019)
+    
+    # getSemesterWiseProgress
+    (plo2, programActualOverall, programAttemptedOverall) = getProgramAchievement('BSc')
+    
     
     return render(request, 'mainapp/dashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
@@ -97,7 +107,25 @@ def studentDashboard(request):
         'plo': plo,
         'courses': courses,
         'table': table,
-        'ploWiseChartName': 'Course-wise PLO analysis'
+        'ploWiseChartName': 'Course-wise PLO analysis',
+        
+        # getStudentProgressView
+        'semester': semester,
+        'semesterActual': semesterActual,
+        'semesterAttempted': semesterAttempted,
+        'studentProgressView': 'Student Progress View (Semester-wise)',
+        
+        # getSemesterWiseProgress
+        'plo1': plo1,
+        'semesterActualOverall': semesterActualOverall,
+        'semesterAttemptedOverall': semesterAttemptedOverall,
+        'semesterProgressView': 'Semester Progress View',
+        
+        # getSemesterWiseProgress
+        'plo2': plo2,
+        'programActualOverall': programActualOverall,
+        'programAttemptedOverall': programAttemptedOverall,
+        'programProgressView': 'Program Progress View',
     })
 
 @authenticated

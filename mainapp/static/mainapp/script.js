@@ -43,6 +43,35 @@ function lineChart(ctx,
     });
 }
 
+function lineChartObject(ctx,
+                   labelList,
+                   chartObjects) {
+    Chart.defaults.global.defaultFontFamily = "Oxygen";
+    Chart.defaults.global.defaultFontColor = "black";
+
+    var chart = new Chart(ctx, {
+        // The type of chart we want to create
+        type: 'line',
+
+        // The data for our dataset
+        data: {
+            labels: labelList,
+            datasets: chartObjects
+        },
+
+        // Configuration options go here
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true
+                    }
+                }]
+            }
+        }
+    });
+}
+
 function barChart(ctx,
                    labelName,
                    labelList,
@@ -80,7 +109,7 @@ function barChart(ctx,
     });
 }
 
-function stackedChart(ctx, labelName, datasetlist) {
+function stackedChart(ctx, labelName, datasetlist, isTrue) {
     
     var chart = new Chart(ctx, {
         type: 'bar',
@@ -98,10 +127,10 @@ function stackedChart(ctx, labelName, datasetlist) {
             },
             scales: {
                 xAxes: [{
-                    stacked: true // this should be set to make the bars stacked
+                    stacked: isTrue // this should be set to make the bars stacked
                 }],
                 yAxes: [{
-                    stacked: true // this also..
+                    stacked: isTrue // this also..
                 }]
             }
         }
