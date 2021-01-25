@@ -861,7 +861,7 @@ def getAverageAchievedPLO():
 # Faculty
 
 # Num of Courses
-def getNumOfCourses(faculty_id):
+def getNumOfCoursesHead(faculty_id):
     number = 0
     with connection.cursor() as cursor:
         cursor.execute('''

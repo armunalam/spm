@@ -81,6 +81,12 @@ def studentDashboard(request):
     # getStudentProgressView
     (semester, semesterActual, semesterAttempted) = getStudentProgressView(student_id, 2019)
     
+    # Heading
+    a = getNoOfPLOAchieved(student_id)
+    b = getNoOfPLOAttempted(student_id)
+    c = getMinLowestPLO(student_id)
+    d = ploSuccessRate(student_id)
+    
     return render(request, 'mainapp/studentdashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
         'usertype': request.user.groups.all()[0].name,
@@ -100,10 +106,17 @@ def studentDashboard(request):
         'semesterActual': semesterActual,
         'semesterAttempted': semesterAttempted,
         'studentProgressView': 'Student Progress View (Semester-wise)',
+        
+        # Heading
+        'a': a,
+        'b': b,
+        'c': c,
+        'd': d,
     })
 
 @allowedUsers(allowedRoles=['Faculty'])
 def facultyDashboard(request):
+    faculty_id = '1237'
     chartName = []
     chartLabel = []
     chartDataSet = []
@@ -131,6 +144,12 @@ def facultyDashboard(request):
     # print(semesterActualCourse)
     # print(semesterAttemptedCourse)
     
+    # Heading
+    a = getNumOfCoursesHead(faculty_id)
+    b = getNumOfSections(faculty_id)
+    c = getAverageSuccessRate(faculty_id)
+    d = getNumOfPLOsTaught(faculty_id)
+    
     return render(request, 'mainapp/facultydashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
         'usertype': request.user.groups.all()[0].name,
@@ -144,10 +163,18 @@ def facultyDashboard(request):
         'semesterActualCourse': semesterActualCourse,
         'semesterAttemptedCourse': semesterAttemptedCourse,
         'courseProgressView': 'Course Progress View',
+        
+        # Heading
+        'a': a,
+        'b': b,
+        'c': c,
+        'd': d,
     })
 
 @allowedUsers(allowedRoles=['Higher Management'])
 def hmDashboard(request):
+    dept_id = 'CSE'
+    
     chartName = []
     chartLabel = []
     chartDataSet = []
@@ -173,6 +200,11 @@ def hmDashboard(request):
     
     # getSemesterWiseProgress
     (plo2, programActualOverall, programAttemptedOverall) = getProgramAchievement('BSc')
+    
+    a = getNumOfStudents(dept_id)
+    b = getNumOfFaculties(dept_id)
+    c = getNumOfCourses()
+    d = getAverageAchievedPLO()
     
     return render(request, 'mainapp/hmdashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
@@ -194,116 +226,122 @@ def hmDashboard(request):
         'programActualOverall': programActualOverall,
         'programAttemptedOverall': programAttemptedOverall,
         'programProgressView': 'Program Progress View',
+        
+        # Heading
+        'a': a,
+        'b': b,
+        'c': c,
+        'd': d,
     })
     
 
-def tempDashboard(request):
+# def tempDashboard(request):
     
-    chartName = []
-    chartLabel = []
-    chartDataSet = []
-    
-    
+#     chartName = []
+#     chartLabel = []
+#     chartDataSet = []
     
     
-    chartN = 'Student-wise PLO'
-    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
     
-    # student_id = '1625654'
-    student_id = '1665555'
     
-    row = getStudentWisePLO(student_id)
+#     chartN = 'Student-wise PLO'
+#     chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+#     chartD = [] # [2, 10, 5, 3, 20, 30, 45]
     
-    for i in row:
-        chartL.append(i[1])
-        chartD.append(i[0])
+#     # student_id = '1625654'
+#     student_id = '1665555'
     
-    chartName.append(chartN)
-    chartLabel.append(chartL)
-    chartDataSet.append(chartD)
+#     row = getStudentWisePLO(student_id)
     
-    chartN = 'Department-wise PLO'
-    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+#     for i in row:
+#         chartL.append(i[1])
+#         chartD.append(i[0])
     
-    row = getDepartmentWisePLO('CSE')
+#     chartName.append(chartN)
+#     chartLabel.append(chartL)
+#     chartDataSet.append(chartD)
     
-    for i in row:
-        chartL.append(i[1])
-        chartD.append(i[2])
+#     chartN = 'Department-wise PLO'
+#     chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+#     chartD = [] # [2, 10, 5, 3, 20, 30, 45]
     
-    chartName.append(chartN)
-    chartLabel.append(chartL)
-    chartDataSet.append(chartD)
+#     row = getDepartmentWisePLO('CSE')
     
-    numberOfGraphs = len(chartName)
+#     for i in row:
+#         chartL.append(i[1])
+#         chartD.append(i[2])
     
-    # Table
+#     chartName.append(chartN)
+#     chartLabel.append(chartL)
+#     chartDataSet.append(chartD)
     
-    ploTable = getCourseWisePLO(student_id)
+#     numberOfGraphs = len(chartName)
     
-    # Stacked PLO Chart
-    (plo, courses, table) = getCourseWisePLOChart(student_id)
+#     # Table
     
-    # getStudentProgressView
-    (semester, semesterActual, semesterAttempted) = getStudentProgressView(student_id, 2019)
+#     ploTable = getCourseWisePLO(student_id)
     
-    # getSemesterWiseProgress
-    (plo1, semesterActualOverall, semesterAttemptedOverall) = getSemesterWiseStudentProgress('2', 2019)
+#     # Stacked PLO Chart
+#     (plo, courses, table) = getCourseWisePLOChart(student_id)
     
-    # getSemesterWiseProgress
-    (plo2, programActualOverall, programAttemptedOverall) = getProgramAchievement('BSc')
+#     # getStudentProgressView
+#     (semester, semesterActual, semesterAttempted) = getStudentProgressView(student_id, 2019)
     
-    # getCourseProgressView
-    (semester2, semesterActualCourse, semesterAttemptedCourse) = getCourseProgressView('CSE303', '2019')
+#     # getSemesterWiseProgress
+#     (plo1, semesterActualOverall, semesterAttemptedOverall) = getSemesterWiseStudentProgress('2', 2019)
     
-    # getVerdictTable(course_id)
-    (verdictRow, verdictTotal) = getVerdictTable('CSE303')
+#     # getSemesterWiseProgress
+#     (plo2, programActualOverall, programAttemptedOverall) = getProgramAchievement('BSc')
     
-    return render(request, 'mainapp/studentdashboard.html', {
-        'userfullname': f'{request.user.first_name} {request.user.last_name}',
-        'usertype': request.user.groups.all()[0].name,
-        'numberOfGraphs': numberOfGraphs,
-        'chartName': chartName,
-        'chartLabel': chartLabel,
-        'chartDataSet': chartDataSet,
-        'ploTable': ploTable,
+#     # getCourseProgressView
+#     (semester2, semesterActualCourse, semesterAttemptedCourse) = getCourseProgressView('CSE303', '2019')
+    
+#     # getVerdictTable(course_id)
+#     (verdictRow, verdictTotal) = getVerdictTable('CSE303')
+    
+#     return render(request, 'mainapp/studentdashboard.html', {
+#         'userfullname': f'{request.user.first_name} {request.user.last_name}',
+#         'usertype': request.user.groups.all()[0].name,
+#         'numberOfGraphs': numberOfGraphs,
+#         'chartName': chartName,
+#         'chartLabel': chartLabel,
+#         'chartDataSet': chartDataSet,
+#         'ploTable': ploTable,
         
-        # Stacked PLO Chart
-        'plo': plo,
-        'courses': courses,
-        'table': table,
-        'ploWiseChartName': 'Course-wise PLO analysis',
+#         # Stacked PLO Chart
+#         'plo': plo,
+#         'courses': courses,
+#         'table': table,
+#         'ploWiseChartName': 'Course-wise PLO analysis',
         
-        # getStudentProgressView
-        'semester': semester,
-        'semesterActual': semesterActual,
-        'semesterAttempted': semesterAttempted,
-        'studentProgressView': 'Student Progress View (Semester-wise)',
+#         # getStudentProgressView
+#         'semester': semester,
+#         'semesterActual': semesterActual,
+#         'semesterAttempted': semesterAttempted,
+#         'studentProgressView': 'Student Progress View (Semester-wise)',
         
-        # getSemesterWiseProgress
-        'plo1': plo1,
-        'semesterActualOverall': semesterActualOverall,
-        'semesterAttemptedOverall': semesterAttemptedOverall,
-        'semesterProgressView': 'Semester Progress View',
+#         # getSemesterWiseProgress
+#         'plo1': plo1,
+#         'semesterActualOverall': semesterActualOverall,
+#         'semesterAttemptedOverall': semesterAttemptedOverall,
+#         'semesterProgressView': 'Semester Progress View',
         
-        # getSemesterWiseProgress
-        'plo2': plo2,
-        'programActualOverall': programActualOverall,
-        'programAttemptedOverall': programAttemptedOverall,
-        'programProgressView': 'Program Progress View',
+#         # getSemesterWiseProgress
+#         'plo2': plo2,
+#         'programActualOverall': programActualOverall,
+#         'programAttemptedOverall': programAttemptedOverall,
+#         'programProgressView': 'Program Progress View',
     
-        # getCourseProgressView
-        'semester2': semester2,
-        'semesterActualCourse': semesterActualCourse,
-        'semesterAttemptedCourse': semesterAttemptedCourse,
-        'courseProgressView': 'Course Progress View',
+#         # getCourseProgressView
+#         'semester2': semester2,
+#         'semesterActualCourse': semesterActualCourse,
+#         'semesterAttemptedCourse': semesterAttemptedCourse,
+#         'courseProgressView': 'Course Progress View',
         
-        # getVerdictTable
-        'verdictRow': verdictRow,
-        'verdictTotal': verdictTotal,
-    })
+#         # getVerdictTable
+#         'verdictRow': verdictRow,
+#         'verdictTotal': verdictTotal,
+#     })
     
 
 
