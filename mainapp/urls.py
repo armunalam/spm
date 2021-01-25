@@ -13,5 +13,7 @@ urlpatterns = [
     path('assessment', views.assessment, name='assessment'),
     path('evaluation', views.evaluation, name='evaluation'),
     path('facultystudentreport', views.facultystudentreport, name='facultystudentreport'),
+    path('facultystudentreportresult', views.facultystudentreportresult, name='facultystudentreportresult'),
     path('coursereport', views.courseReport, name='coursereport'),
+    path('coursereportresult', views.courseReportResult, name='coursereportresult'),
 ]

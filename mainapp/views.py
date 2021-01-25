@@ -526,12 +526,36 @@ def evaluation(request):
         return redirect('dataentry')
 
 @allowedUsers(allowedRoles=['Faculty', 'Higher Management'])
+def facultystudentreportresult(request):
+    if request.method == 'POST':
+        student_id = request.POST.get('student-id')
+        print(student_id)
+        ploTable = getCourseWisePLO(student_id)
+        
+        if request.user.groups.exists():
+            group = request.user.groups.all()[0].name
+        
+        scripttag = 'false'
+        if group == 'Higher Management':
+            scripttag = 'false'
+        
+        searchtag = 'false'
+        
+        return render(request, 'mainapp/facultystudentreport.html', {
+            'userfullname': f'{request.user.first_name} {request.user.last_name}',
+            'usertype': request.user.groups.all()[0].name,
+            'ploTable': ploTable,
+            'scripttag': scripttag,
+            'searchtag': searchtag,
+        })
+
+@allowedUsers(allowedRoles=['Faculty', 'Higher Management'])
 def facultystudentreport(request):
-    student_id = '1665555'
-    ploTable = getCourseWisePLO(student_id)
-    
+    searchtag = 'true'
+
+        
     if request.user.groups.exists():
-        group = request.user.groups.all()[0].name
+            group = request.user.groups.all()[0].name
     
     scripttag = 'false'
     if group == 'Higher Management':
@@ -540,14 +564,39 @@ def facultystudentreport(request):
     return render(request, 'mainapp/facultystudentreport.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
         'usertype': request.user.groups.all()[0].name,
-        'ploTable': ploTable,
         'scripttag': scripttag,
+        'searchtag': searchtag,
     })
     
-
+@allowedUsers(allowedRoles=['Faculty', 'Higher Management'])
+def courseReportResult(request):
+    if request.method == 'POST':
+        course_id = request.POST.get('course-id')
+        (verdictRow, verdictTotal) = getVerdictTable(course_id)
+        
+        searchtag = 'false'
+        
+        if request.user.groups.exists():
+            group = request.user.groups.all()[0].name
+        
+        scripttag = 'false'
+        if group == 'Higher Management':
+            scripttag = 'true'
+        
+        return render(request, 'mainapp/coursereport.html', {
+            'userfullname': f'{request.user.first_name} {request.user.last_name}',
+            'usertype': request.user.groups.all()[0].name,
+            # getVerdictTable
+            'verdictRow': verdictRow,
+            'verdictTotal': verdictTotal,
+            'scripttag': scripttag,
+            'searchtag': searchtag,
+        })
+    
+@allowedUsers(allowedRoles=['Faculty', 'Higher Management'])
 def courseReport(request):
-    # getVerdictTable(course_id)
-    (verdictRow, verdictTotal) = getVerdictTable('CSE303')
+    searchtag = 'true'
+    
     
     if request.user.groups.exists():
         group = request.user.groups.all()[0].name
@@ -559,10 +608,8 @@ def courseReport(request):
     return render(request, 'mainapp/coursereport.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
         'usertype': request.user.groups.all()[0].name,
-        # getVerdictTable
-        'verdictRow': verdictRow,
-        'verdictTotal': verdictTotal,
         'scripttag': scripttag,
+        'searchtag': searchtag,
     })
 
 @authenticated
