@@ -47,7 +47,8 @@ def studentDashboard(request):
     chartD = [] # [2, 10, 5, 3, 20, 30, 45]
     
     # student_id = '1625654'
-    student_id = '1665555'
+    student_id = request.user.username
+    print(str(student_id))
     
     row = getStudentWisePLO(student_id)
     
@@ -116,7 +117,7 @@ def studentDashboard(request):
 
 @allowedUsers(allowedRoles=['Faculty'])
 def facultyDashboard(request):
-    faculty_id = '1237'
+    faculty_id = request.user.username
     chartName = []
     chartLabel = []
     chartDataSet = []
@@ -360,7 +361,7 @@ def dashboard(request):
 # Overall Report
 @allowedUsers(allowedRoles=['Student'])
 def studentReport(request):
-    student_id = '1665555'
+    student_id = request.user.username
     ploTable = getCourseWisePLO(student_id)
     
     return render(request, 'mainapp/studentreport.html', {
@@ -415,7 +416,7 @@ def mapping(request):
 def assessment(request):
     if request.method == 'POST':
         # course_id = request.POST.get('course-id')
-        faculty_id = '1234'
+        faculty_id = request.user.username
         course_id = request.POST.get('course-id')
         sectionNo = request.POST.get('section')
         coMarks = request.POST.getlist('coMarks')
