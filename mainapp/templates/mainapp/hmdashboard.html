@@ -1,0 +1,113 @@
+{% extends "mainapp/hmlayout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+    <div class="flex-container gridwise">
+        <div class="box-item blue">
+            <span><b>Students:</b><br />200</span>
+        </div>
+        <div class="box-item red">
+            <span><b>Faculties:</b><br />20</span>
+        </div>
+        <div class="box-item green">
+            <span><b>Admin:</b><br />1</span>
+        </div>
+        <div class="box-item orange">
+            <span><b>UGC:</b><br />1</span>
+        </div>
+    </div>
+    <div id="inner-section" class="flex-container blockwise">
+        <script>
+            let numberOfGraphs = {{ numberOfGraphs }};
+            let graphContainer = document.querySelector('#inner-section');
+            {% comment %} let graphHolderList = []; {% endcomment %}
+            
+            chartName = [{% for chartN in chartName %} '{{ chartN }}', {% endfor %}];
+            chartLabel = [{% for chartL in chartLabel %}[ {% for chartT in chartL %} '{{ chartT }}', {% endfor %}], {% endfor %}];
+            chartDataSet = [{% for chartD in chartDataSet %} {{ chartD }}, {% endfor %}];
+            
+            for (let i = 0; i < numberOfGraphs; i++) {
+                let graphHolder = document.createElement('div');
+                graphHolder.className = 'box';
+                graphHolder.innerHTML = `
+                    <div class="box-section-head negative-margin">${chartName[i]}</div>
+                    <div class="chart" style="width: 80%;">
+                        <canvas id="chart${i}" width="300" height="180"></canvas>
+                    </div>
+                `;
+                graphContainer.appendChild(graphHolder);
+                {% comment %} let graphHolders = document.getElementById('chart1').getContext('2d'); {% endcomment %}
+                barChart(graphHolder.children[1].children[0].getContext('2d'), chartName[i], chartLabel[i], chartDataSet[i], '#094480', '#a4b5c7');
+            }
+            
+            
+        </script>
+    </div>
+    <div id="testID2" class="flex-container blockwise">
+        <script>
+            graphContainer = document.querySelector('#testID2');
+            plo1 = [{% for i in plo1 %} '{{ i }}', {% endfor %}];
+            courses = [{% for i in courses %} '{{ i }}', {% endfor %}];
+            graphHolder = document.createElement('div');
+            graphHolder.className = 'box';
+            graphHolder.innerHTML = `
+                <div class="box-section-head negative-margin">{{ semesterProgressView }}</div>
+                <div class="chart marg-top">
+                    <canvas id="chartPLO" style="width: 100%; height: 90%;" width="1000" height="500"></canvas>
+                </div>
+            `;
+            graphContainer.appendChild(graphHolder);
+            
+            {% comment %} colors = ['#22aa99', '#994499', '#316395', '#b82e2e', '#66aa00', '#dd4477'] {% endcomment %}
+            colors = palette('tol', courses.length).map(function(hex) {
+                return '#' + hex;
+            });
+            
+            datasetlist = [{
+                label: 'Target',
+                data: {{ semesterAttemptedOverall }},
+                backgroundColor: '#094480'
+                
+            }, {
+                label: 'Actual',
+                data: {{ semesterActualOverall }},
+                backgroundColor: '#962323'
+            }];
+            
+            stackedChart(graphHolder.children[1].children[0].getContext('2d'), plo1, datasetlist, false);
+        </script>
+    </div>
+    <div id="testID3" class="flex-container blockwise">
+        <script>
+            graphContainer = document.querySelector('#testID3');
+            plo2 = [{% for i in plo2 %} '{{ i }}', {% endfor %}];
+            graphHolder = document.createElement('div');
+            graphHolder.className = 'box';
+            graphHolder.innerHTML = `
+                <div class="box-section-head negative-margin">{{ programProgressView }}</div>
+                <div class="chart marg-top">
+                    <canvas id="chartPLO" style="width: 100%; height: 90%;" width="1000" height="500"></canvas>
+                </div>
+            `;
+            graphContainer.appendChild(graphHolder);
+            
+            
+            
+            datasetlist = [{
+                label: 'Target',
+                data: {{ programAttemptedOverall }},
+                backgroundColor: '#094480'
+                
+            }, {
+                label: 'Actual',
+                data: {{ programActualOverall }},
+                backgroundColor: '#962323'
+            }];
+            
+            stackedChart(graphHolder.children[1].children[0].getContext('2d'), plo2, datasetlist, false);
+        </script>
+    </div>
+    
+    <script>
+        highlightCurrentPage('dashboard');
+    </script>
+{% endblock %}

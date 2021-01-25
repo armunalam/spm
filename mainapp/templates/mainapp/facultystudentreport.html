@@ -51,7 +51,12 @@
     </div>
     
     
-    
+    <script>
+        if ({{ scripttag }}) {
+            let dataentryli = document.querySelector('#dataentryli');
+            dataentryli.style = 'display: none;';
+        }
+    </script>
     <script>
         highlightCurrentPage('report');
     </script>

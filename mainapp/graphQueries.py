@@ -26,7 +26,7 @@ def getStudentWisePLO(student_id):
                             AND c.plo_id = '{}'
                         GROUP BY en.section_id
                     ) ploPer
-                )TotalPlo;
+                ) TotalPlo;
             '''.format(student_id, ploNum))
             temp = cursor.fetchone()
             if temp is not None:
@@ -646,3 +646,389 @@ def getVerdictTable(course_id):
         finalRow.append(tempRow)
     
     return (finalRow, total)
+    
+    
+# Student
+
+# Number of PLOs achieved by students
+def getNoOfPLOAchieved(student_id):
+    number = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT COUNT(TotalPlo.PLOpercentage) AS Acheive
+            FROM (
+                    SELECT   student_id,(PLO / TotalComark * 100) AS PLOpercentage
+                    FROM mainapp_plo_t p,
+                        mainapp_co_t co,
+                        (
+                            SELECT en.student_id,c.plo_id,SUM(DISTINCT e.obtainedMarks) AS PLO,SUM(DISTINCT a.marks)AS TotalCoMark
+                            FROM mainapp_enrollment_t en,
+                                mainapp_evaluation_t e,
+                                mainapp_assessment_t a,
+                                mainapp_co_t c,
+                                mainapp_plo_t p,
+                                mainapp_section_t sec
+                            WHERE en.student_id = '{}'
+                            AND en.enrollmentID = e.enrollment_id
+                                AND e.assessment_id = a.assessmentNo
+                                AND a.co_id = c.id
+                                AND c.plo_id = p.ploNo
+                            GROUP BY  student_id,p.ploNo
+                        ) ploPer
+                    WHERE p.ploNo = ploPer.plo_id
+
+                GROUP BY student_id,ploNo
+                HAVING PLOpercentage >=40
+                ) TotalPlo
+
+            GROUP BY student_id
+        '''.format(student_id))
+        number = cursor.fetchone()[0]
+        if number is None:
+            number = 0
+            
+    return number
+    
+# PLO Attempted
+def getNoOfPLOAttempted(student_id):
+    number = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT COUNT(TotalPlo.PLOpercentage) AS Acheive
+            FROM (
+                    SELECT   student_id,(PLO / TotalComark * 100) AS PLOpercentage
+                    FROM mainapp_plo_t p,
+                        mainapp_co_t co,
+                        (
+                            SELECT en.student_id,c.plo_id,SUM(DISTINCT e.obtainedMarks) AS PLO,SUM(DISTINCT a.marks)AS TotalCoMark
+                            FROM mainapp_enrollment_t en,
+                                mainapp_evaluation_t e,
+                                mainapp_assessment_t a,
+                                mainapp_co_t c,
+                                mainapp_plo_t p,
+                                mainapp_section_t sec
+                            WHERE en.student_id = '{}'
+                            AND en.enrollmentID = e.enrollment_id
+                                AND e.assessment_id = a.assessmentNo
+                                AND a.co_id = c.id
+                                AND c.plo_id = p.ploNo
+                            GROUP BY  student_id,p.ploNo
+                        ) ploPer
+                    WHERE p.ploNo = ploPer.plo_id
+
+                GROUP BY student_id,ploNo
+            
+                ) TotalPlo
+        '''.format(student_id))
+        number = cursor.fetchone()[0]
+        if number is None:
+            number = 0
+            
+    return number
+    
+
+# min lowest PLO %
+def getMinLowestPLO(student_id):
+    number = 1000000
+    plo = ''
+    for i in range(12):
+        ploNum = f'PLO0{i + 1}'
+        if i + 1 >= 10:
+            ploNum = f'PLO{i + 1}'
+        with connection.cursor() as cursor:
+            cursor.execute('''
+                SELECT AVG(TotalPlo.PLOpercentage) AS ActualPlo
+                FROM (
+                SELECT (PLO / TotalComark * 100) AS PLOpercentage
+                FROM (
+                        SELECT SUM(DISTINCT e.obtainedMarks) AS PLO, SUM(DISTINCT a.marks) AS TotalCoMark
+                        FROM mainapp_enrollment_t en,
+                            mainapp_evaluation_t e,
+                            mainapp_assessment_t a,
+                            mainapp_co_t c,
+                            mainapp_plo_t p
+                        WHERE en.student_id = '{}'
+                            AND en.enrollmentID = e.enrollment_id
+                            AND e.assessment_id = a.assessmentNo
+                            AND a.co_id = c.id
+                            AND c.plo_id = '{}'
+                        GROUP BY en.section_id
+                    ) ploPer
+                ) TotalPlo;
+            '''.format(student_id, ploNum))
+            temp = cursor.fetchone()
+            if temp is not None:
+                if number > temp[0]:
+                    number = temp[0]
+                    plo = ploNum
+                    
+    return plo
+
+# PLO Success Rate
+def ploSuccessRate(student_id):
+    return np.round(getNoOfPLOAchieved(student_id) / getNoOfPLOAttempted(student_id) * 100, 1)
+
+
+# Higher Management
+
+# Number of Students
+def getNumOfStudents(dept_id):
+    number = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT COUNT(studentID) AS NoOfStudent
+            FROM mainapp_student_t
+            WHERE department_id = '{}'
+        '''.format(dept_id))
+        number = cursor.fetchone()[0]
+        if number is None:
+            number = 0
+            
+    return number
+
+# Number of Faculties
+def getNumOfFaculties(dept_id):
+    number = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT COUNT (DISTINCT facultyID ) AS NoFaculty
+            FROM mainapp_faculty_t
+            WHERE department_id = '{}'
+        '''.format(dept_id))
+        number = cursor.fetchone()[0]
+        if number is None:
+            number = 0
+            
+    return number
+    
+# Number of courses in a department
+def getNumOfCourses():
+    number = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT COUNT(courseID) AS NoOfcourses
+            FROM mainapp_course_t
+        '''.format())
+        number = cursor.fetchone()[0]
+        if number is None:
+            number = 0
+            
+    return number
+
+# Average Achieved PLO
+def getAverageAchievedPLO():
+    number = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT AVG(AcheivedPLo) AS AVGacheivedPlo
+            FROM (
+                    SELECT ploNo, COUNT(Acheived.ActualPlo) AS AcheivedPLo
+                    FROM (
+                            SELECT ploNo, AVG(TotalPlo.PLOpercentage) AS ActualPlo
+                            FROM (
+                                    SELECT student_id, ploNo, (PLO / TotalComark * 100) AS PLOpercentage
+                                    FROM (
+                                                SELECT en.student_id,
+                                                    ploNo,
+                                                    SUM(DISTINCT e.obtainedMarks) AS PLO,
+                                                    SUM(DISTINCT a.marks)         AS TotalCoMark
+                                                FROM mainapp_enrollment_t en,
+                                                    mainapp_evaluation_t e,
+                                                    mainapp_assessment_t a,
+                                                    mainapp_co_t c,
+                                                    mainapp_plo_t p
+                                                WHERE en.enrollmentID = e.enrollment_id
+                                                AND e.assessment_id = a.assessmentNo
+                                                AND a.co_id = c.id
+                                                AND c.plo_id = p.ploNo
+                                                GROUP BY en.student_id, ploNo
+                                            ) ploPer
+                                    GROUP BY student_id, ploNo
+                                ) TotalPlo
+                            GROUP BY student_id, ploNo
+                        ) Acheived
+                    WHERE Acheived.ActualPlo >= 40
+                    GROUP BY ploNo
+                )
+        '''.format())
+        number = cursor.fetchone()[0]
+        if number is None:
+            number = 0
+            
+    return np.round(number, 1)
+    
+    
+# Faculty
+
+# Num of Courses
+def getNumOfCourses(faculty_id):
+    number = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT COUNT(DISTINCT course_id) AS NoOfCourses
+            FROM mainapp_section_t
+            WHERE faculty_id = '{}';
+        '''.format(faculty_id))
+        number = cursor.fetchone()[0]
+        if number is None:
+            number = 0
+            
+    return number
+    
+# Num of Sections
+def getNumOfSections(faculty_id):
+    number = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT COUNT(id) AS NoOfSection
+            FROM mainapp_section_t
+            WHERE faculty_id = '{}';
+        '''.format(faculty_id))
+        number = cursor.fetchone()[0]
+        if number is None:
+            number = 0
+            
+    return number
+    
+# Average PLO Success Rate
+def getAverageSuccessRate(faculty_id):
+    achieved = 0
+    attempted = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT AVG(Acheive) AS AVGPloacheivedbyastudent
+            FROM (
+                    SELECT course_id, coNo, ploNo, COUNT(TotalPlo.PLOpercentage) AS Acheive
+                    FROM (
+                            SELECT co.course_id, co.coNo, p.ploNo, (PLO / TotalComark * 100) AS PLOpercentage
+                            FROM mainapp_plo_t p,
+                                mainapp_co_t co,
+                                (
+                                    SELECT en.student_id,
+                                            c.course_id,
+                                            c.coNo,
+                                            c.plo_id,
+                                            SUM(DISTINCT e.obtainedMarks) AS PLO,
+                                            SUM(DISTINCT a.marks)         AS TotalCoMark
+                                    FROM mainapp_enrollment_t en,
+                                            mainapp_section_t sec,
+                                            mainapp_evaluation_t e,
+                                            mainapp_assessment_t a,
+                                            mainapp_co_t c,
+                                            mainapp_plo_t p
+                                    WHERE en.enrollmentID = e.enrollment_id
+                                        AND en.section_id = sec.id
+                                        AND faculty_id = '{}'
+                                        AND e.assessment_id = a.assessmentNo
+                                        AND a.co_id = c.id
+                                        AND c.plo_id = p.ploNo
+                                    GROUP BY student_id, c.course_id, c.coNo, p.ploNo
+                                ) ploPer
+                            WHERE co.coNo = ploPer.coNo
+                                AND p.ploNo = ploPer.plo_id
+                                AND co.course_id = ploPer.course_id
+                            GROUP BY student_id, co.course_id, co.coNo, ploNo
+                            HAVING PLOpercentage >= 40
+                        ) TotalPlo
+
+                    GROUP BY course_id, coNo, ploNo
+                )
+        '''.format(faculty_id))
+        achieved = cursor.fetchone()[0]
+        if achieved is None:
+            achieved = 0
+            
+        cursor.execute('''
+            SELECT AVG(Acheive) AS AVGPloacheivedbyastudent
+            FROM (
+                    SELECT course_id, coNo, ploNo, COUNT(TotalPlo.PLOpercentage) AS Acheive
+                    FROM (
+                            SELECT co.course_id, co.coNo, p.ploNo, (PLO / TotalComark * 100) AS PLOpercentage
+                            FROM mainapp_plo_t p,
+                                mainapp_co_t co,
+                                (
+                                    SELECT en.student_id,
+                                            c.course_id,
+                                            c.coNo,
+                                            c.plo_id,
+                                            SUM(DISTINCT e.obtainedMarks) AS PLO,
+                                            SUM(DISTINCT a.marks)         AS TotalCoMark
+                                    FROM mainapp_enrollment_t en,
+                                            mainapp_section_t sec,
+                                            mainapp_evaluation_t e,
+                                            mainapp_assessment_t a,
+                                            mainapp_co_t c,
+                                            mainapp_plo_t p
+                                    WHERE en.enrollmentID = e.enrollment_id
+                                        AND en.section_id = sec.id
+                                        AND faculty_id = '{}'
+                                        AND e.assessment_id = a.assessmentNo
+                                        AND a.co_id = c.id
+                                        AND c.plo_id = p.ploNo
+                                    GROUP BY student_id, c.course_id, c.coNo, p.ploNo
+                                ) ploPer
+                            WHERE co.coNo = ploPer.coNo
+                                AND p.ploNo = ploPer.plo_id
+                                AND co.course_id = ploPer.course_id
+                            GROUP BY student_id, co.course_id, co.coNo, ploNo
+                        ) TotalPlo
+
+                    GROUP BY course_id, coNo, ploNo
+                )
+        '''.format(faculty_id))
+        attempted = cursor.fetchone()[0]
+        if attempted is None:
+            attempted = 0
+            
+    return np.round(achieved / attempted * 100, 1)
+        
+
+# Total Number of PLOs Taught
+def getNumOfPLOsTaught(faculty_id):
+    number = 0
+    with connection.cursor() as cursor:
+        cursor.execute('''
+            SELECT COUNT(ploNo) AS TotalNoPlotaught
+            FROM (
+                    SELECT course_id, coNo, ploNo, COUNT(TotalPlo.PLOpercentage) AS Acheive
+                    FROM (
+                            SELECT co.course_id, co.coNo, p.ploNo, (PLO / TotalComark * 100) AS PLOpercentage
+                            FROM mainapp_plo_t p,
+                                mainapp_co_t co,
+                                (
+                                    SELECT en.student_id,
+                                            c.course_id,
+                                            c.coNo,
+                                            c.plo_id,
+                                            SUM(DISTINCT e.obtainedMarks) AS PLO,
+                                            SUM(DISTINCT a.marks)         AS TotalCoMark
+                                    FROM mainapp_enrollment_t en,
+                                            mainapp_section_t sec,
+                                            mainapp_evaluation_t e,
+                                            mainapp_assessment_t a,
+                                            mainapp_co_t c,
+                                            mainapp_plo_t p
+                                    WHERE en.enrollmentID = e.enrollment_id
+                                        AND en.section_id = sec.id
+                                        AND faculty_id = '{}'
+                                        AND e.assessment_id = a.assessmentNo
+                                        AND a.co_id = c.id
+                                        AND c.plo_id = p.ploNo
+                                    GROUP BY student_id, c.course_id, c.coNo, p.ploNo
+                                ) ploPer
+                            WHERE co.coNo = ploPer.coNo
+                                AND p.ploNo = ploPer.plo_id
+                                AND co.course_id = ploPer.course_id
+                            GROUP BY student_id, co.course_id, co.coNo, ploNo
+
+                        ) TotalPlo
+
+                    GROUP BY course_id, coNo, ploNo
+                )
+        '''.format(faculty_id))
+        number = cursor.fetchone()[0]
+        if number is None:
+            number = 0
+            
+    return number
+

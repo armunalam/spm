@@ -127,9 +127,9 @@ def facultyDashboard(request):
     # getCourseProgressView
     (semester2, semesterActualCourse, semesterAttemptedCourse) = getCourseProgressView('CSE303', '2019')
     
-    print(semester2)
-    print(semesterActualCourse)
-    print(semesterAttemptedCourse)
+    # print(semester2)
+    # print(semesterActualCourse)
+    # print(semesterAttemptedCourse)
     
     return render(request, 'mainapp/facultydashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
@@ -145,7 +145,56 @@ def facultyDashboard(request):
         'semesterAttemptedCourse': semesterAttemptedCourse,
         'courseProgressView': 'Course Progress View',
     })
+
+@allowedUsers(allowedRoles=['Higher Management'])
+def hmDashboard(request):
+    chartName = []
+    chartLabel = []
+    chartDataSet = []
     
+    chartN = 'Department-wise PLO'
+    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    
+    row = getDepartmentWisePLO('CSE')
+    
+    for i in row:
+        chartL.append(i[1])
+        chartD.append(i[2])
+    
+    chartName.append(chartN)
+    chartLabel.append(chartL)
+    chartDataSet.append(chartD)
+    
+    numberOfGraphs = len(chartName)
+    
+    # getSemesterWiseProgress
+    (plo1, semesterActualOverall, semesterAttemptedOverall) = getSemesterWiseStudentProgress('2', 2019)
+    
+    # getSemesterWiseProgress
+    (plo2, programActualOverall, programAttemptedOverall) = getProgramAchievement('BSc')
+    
+    return render(request, 'mainapp/hmdashboard.html', {
+        'userfullname': f'{request.user.first_name} {request.user.last_name}',
+        'usertype': request.user.groups.all()[0].name,
+        
+        'numberOfGraphs': numberOfGraphs,
+        'chartName': chartName,
+        'chartLabel': chartLabel,
+        'chartDataSet': chartDataSet,
+        
+        # getSemesterWiseProgress
+        'plo1': plo1,
+        'semesterActualOverall': semesterActualOverall,
+        'semesterAttemptedOverall': semesterAttemptedOverall,
+        'semesterProgressView': 'Semester Progress View',
+        
+        # getSemesterWiseProgress
+        'plo2': plo2,
+        'programActualOverall': programActualOverall,
+        'programAttemptedOverall': programAttemptedOverall,
+        'programProgressView': 'Program Progress View',
+    })
     
 
 def tempDashboard(request):
@@ -267,6 +316,8 @@ def dashboard(request):
             return studentDashboard(request)
         if group == 'Faculty':
             return facultyDashboard(request)
+        if group == 'Higher Management':
+            return hmDashboard(request)
     
 # Overall Report
 @allowedUsers(allowedRoles=['Student'])
@@ -436,20 +487,36 @@ def evaluation(request):
                 
         return redirect('dataentry')
 
-@allowedUsers(allowedRoles=['Faculty'])
+@allowedUsers(allowedRoles=['Faculty', 'Higher Management'])
 def facultystudentreport(request):
     student_id = '1665555'
     ploTable = getCourseWisePLO(student_id)
+    
+    if request.user.groups.exists():
+        group = request.user.groups.all()[0].name
+    
+    scripttag = 'false'
+    if group == 'Higher Management':
+        scripttag = 'true'
     
     return render(request, 'mainapp/facultystudentreport.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
         'usertype': request.user.groups.all()[0].name,
         'ploTable': ploTable,
+        'scripttag': scripttag,
     })
     
+
 def courseReport(request):
     # getVerdictTable(course_id)
     (verdictRow, verdictTotal) = getVerdictTable('CSE303')
+    
+    if request.user.groups.exists():
+        group = request.user.groups.all()[0].name
+    
+    scripttag = 'false'
+    if group == 'Higher Management':
+        scripttag = 'true'
     
     return render(request, 'mainapp/coursereport.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
@@ -457,6 +524,7 @@ def courseReport(request):
         # getVerdictTable
         'verdictRow': verdictRow,
         'verdictTotal': verdictTotal,
+        'scripttag': scripttag,
     })
 
 @authenticated
