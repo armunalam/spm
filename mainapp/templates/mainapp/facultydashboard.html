@@ -1,0 +1,88 @@
+{% extends "mainapp/facultylayout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+    <div class="flex-container gridwise">
+        <div class="box-item blue">
+            <span><b>Students:</b><br />200</span>
+        </div>
+        <div class="box-item red">
+            <span><b>Faculties:</b><br />20</span>
+        </div>
+        <div class="box-item green">
+            <span><b>Admin:</b><br />1</span>
+        </div>
+        <div class="box-item orange">
+            <span><b>UGC:</b><br />1</span>
+        </div>
+    </div>
+    <div id="inner-section" class="gridwise-container blockwise">
+        <script>
+            let numberOfGraphs = {{ numberOfGraphs }};
+            let graphContainer = document.querySelector('#inner-section');
+            {% comment %} let graphHolderList = []; {% endcomment %}
+            
+            chartName = [{% for chartN in chartName %} '{{ chartN }}', {% endfor %}];
+            chartLabel = [{% for chartL in chartLabel %}[ {% for chartT in chartL %} '{{ chartT }}', {% endfor %}], {% endfor %}];
+            chartDataSet = [{% for chartD in chartDataSet %} {{ chartD }}, {% endfor %}];
+            
+            for (let i = 0; i < numberOfGraphs; i++) {
+                let graphHolder = document.createElement('div');
+                graphHolder.className = 'box';
+                graphHolder.innerHTML = `
+                    <div class="box-section-head negative-margin">${chartName[i]}</div>
+                    <div class="chart">
+                        <canvas id="chart${i}" width="300" height="200"></canvas>
+                    </div>
+                `;
+                graphContainer.appendChild(graphHolder);
+                {% comment %} let graphHolders = document.getElementById('chart1').getContext('2d'); {% endcomment %}
+                barChart(graphHolder.children[1].children[0].getContext('2d'), chartName[i], chartLabel[i], chartDataSet[i], '#094480', '#a4b5c7');
+            }
+            
+            
+            
+            // getCourseProgressView
+            let graphContainer2 = document.querySelector('#inner-section');
+            let graphHolder2 = document.createElement('div');
+            let semester2 = [{% for i in semester2 %} '{{ i }}', {% endfor %}];
+            let semesterActualCourse = {{ semesterActualCourse }};
+            let semesterAttemptedCourse = {{ semesterAttemptedCourse }};
+            graphHolder2.className = 'box';
+            graphHolder2.innerHTML = `
+                <div class="box-section-head negative-margin">{{ courseProgressView }}</div>
+                <div class="chart">
+                    <canvas id="chartSemester" width="300" height="200"></canvas>
+                </div>
+            `;
+            graphContainer2.appendChild(graphHolder2);
+            
+            colorpalette = ['blue', 'red', 'green', 'orange', 'yellow', '#990011FF', 'purple', 'violet', 'brown', 'cyan', 'magenta', 'lime']
+            chartObjects = []
+            for (let i = 0; i < 12; i++) {
+                let l = `PLO0${i + 1}`
+                if (i + 1 >= 10) {
+                    l = `PLO${i + 1}`
+                }
+                    
+                chartObjects.push({
+                    label: l,
+                    backgroundColor: 'white',
+                    borderColor: colorpalette[i],
+                    data: semesterActualCourse[i]
+                });
+            }
+            chartObjects.push({
+                label: 'Overall',
+                backgroundColor: 'white',
+                borderColor: 'black',
+                data: semesterAttemptedCourse
+            });
+            {% comment %} let graphHolders = document.getElementById('chart1').getContext('2d'); {% endcomment %}
+            lineChartObject(graphHolder2.children[1].children[0].getContext('2d'), semester2, chartObjects);
+        </script>
+    </div>
+    
+    <script>
+        highlightCurrentPage('dashboard');
+    </script>
+{% endblock %}

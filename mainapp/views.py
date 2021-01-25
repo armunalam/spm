@@ -38,6 +38,117 @@ def logoutpage(request):
 
 @allowedUsers(allowedRoles=['Student'])
 def studentDashboard(request):
+    chartName = []
+    chartLabel = []
+    chartDataSet = []
+    
+    chartN = 'Student-wise PLO'
+    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    
+    # student_id = '1625654'
+    student_id = '1665555'
+    
+    row = getStudentWisePLO(student_id)
+    
+    for i in row:
+        chartL.append(i[1])
+        chartD.append(i[0])
+    
+    chartName.append(chartN)
+    chartLabel.append(chartL)
+    chartDataSet.append(chartD)
+    
+    chartN = 'Department-wise PLO'
+    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    
+    row = getDepartmentWisePLO('CSE')
+    
+    for i in row:
+        chartL.append(i[1])
+        chartD.append(i[2])
+    
+    chartName.append(chartN)
+    chartLabel.append(chartL)
+    chartDataSet.append(chartD)
+    
+    numberOfGraphs = len(chartName)
+    
+    # Stacked PLO Chart
+    (plo, courses, table) = getCourseWisePLOChart(student_id)
+    
+    # getStudentProgressView
+    (semester, semesterActual, semesterAttempted) = getStudentProgressView(student_id, 2019)
+    
+    return render(request, 'mainapp/studentdashboard.html', {
+        'userfullname': f'{request.user.first_name} {request.user.last_name}',
+        'usertype': request.user.groups.all()[0].name,
+        'numberOfGraphs': numberOfGraphs,
+        'chartName': chartName,
+        'chartLabel': chartLabel,
+        'chartDataSet': chartDataSet,
+        
+        # Stacked PLO Chart
+        'plo': plo,
+        'courses': courses,
+        'table': table,
+        'ploWiseChartName': 'Course-wise PLO analysis',
+        
+        # getStudentProgressView
+        'semester': semester,
+        'semesterActual': semesterActual,
+        'semesterAttempted': semesterAttempted,
+        'studentProgressView': 'Student Progress View (Semester-wise)',
+    })
+
+@allowedUsers(allowedRoles=['Faculty'])
+def facultyDashboard(request):
+    chartName = []
+    chartLabel = []
+    chartDataSet = []
+    
+    chartN = 'Department-wise PLO'
+    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
+    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    
+    row = getDepartmentWisePLO('CSE')
+    
+    for i in row:
+        chartL.append(i[1])
+        chartD.append(i[2])
+    
+    chartName.append(chartN)
+    chartLabel.append(chartL)
+    chartDataSet.append(chartD)
+    
+    numberOfGraphs = len(chartName)
+    
+    # getCourseProgressView
+    (semester2, semesterActualCourse, semesterAttemptedCourse) = getCourseProgressView('CSE303', '2019')
+    
+    print(semester2)
+    print(semesterActualCourse)
+    print(semesterAttemptedCourse)
+    
+    return render(request, 'mainapp/facultydashboard.html', {
+        'userfullname': f'{request.user.first_name} {request.user.last_name}',
+        'usertype': request.user.groups.all()[0].name,
+        'numberOfGraphs': numberOfGraphs,
+        'chartName': chartName,
+        'chartLabel': chartLabel,
+        'chartDataSet': chartDataSet,
+        
+        # getCourseProgressView
+        'semester2': semester2,
+        'semesterActualCourse': semesterActualCourse,
+        'semesterAttemptedCourse': semesterAttemptedCourse,
+        'courseProgressView': 'Course Progress View',
+    })
+    
+    
+
+def tempDashboard(request):
     
     chartName = []
     chartLabel = []
@@ -101,7 +212,7 @@ def studentDashboard(request):
     # getVerdictTable(course_id)
     (verdictRow, verdictTotal) = getVerdictTable('CSE303')
     
-    return render(request, 'mainapp/dashboard.html', {
+    return render(request, 'mainapp/studentdashboard.html', {
         'userfullname': f'{request.user.first_name} {request.user.last_name}',
         'usertype': request.user.groups.all()[0].name,
         'numberOfGraphs': numberOfGraphs,
@@ -154,10 +265,22 @@ def dashboard(request):
         
         if group == 'Student':
             return studentDashboard(request)
+        if group == 'Faculty':
+            return facultyDashboard(request)
     
+# Overall Report
+@allowedUsers(allowedRoles=['Student'])
+def studentReport(request):
+    student_id = '1665555'
+    ploTable = getCourseWisePLO(student_id)
     
+    return render(request, 'mainapp/studentreport.html', {
+        'userfullname': f'{request.user.first_name} {request.user.last_name}',
+        'usertype': request.user.groups.all()[0].name,
+        'ploTable': ploTable,
+    })
 
-@authenticated
+@allowedUsers(allowedRoles=['Faculty'])
 def dataentry(request):
     temp = Course_T.objects.filter()
     courses = []
@@ -170,6 +293,7 @@ def dataentry(request):
         'courses': courses,
     })
     
+@allowedUsers(allowedRoles=['Faculty'])
 def mapping(request):
     if request.method == 'POST':
         # print(request.POST)
@@ -198,7 +322,7 @@ def mapping(request):
 #             noOfCO = 0
         
         
-    
+@allowedUsers(allowedRoles=['Faculty'])
 def assessment(request):
     if request.method == 'POST':
         # course_id = request.POST.get('course-id')
@@ -234,7 +358,7 @@ def assessment(request):
             
         return redirect('dataentry')
     
-
+@allowedUsers(allowedRoles=['Faculty'])
 def evaluation(request):
     if request.method == 'POST':
         course_id = request.POST.get('course-id')
@@ -312,6 +436,28 @@ def evaluation(request):
                 
         return redirect('dataentry')
 
+@allowedUsers(allowedRoles=['Faculty'])
+def facultystudentreport(request):
+    student_id = '1665555'
+    ploTable = getCourseWisePLO(student_id)
+    
+    return render(request, 'mainapp/facultystudentreport.html', {
+        'userfullname': f'{request.user.first_name} {request.user.last_name}',
+        'usertype': request.user.groups.all()[0].name,
+        'ploTable': ploTable,
+    })
+    
+def courseReport(request):
+    # getVerdictTable(course_id)
+    (verdictRow, verdictTotal) = getVerdictTable('CSE303')
+    
+    return render(request, 'mainapp/coursereport.html', {
+        'userfullname': f'{request.user.first_name} {request.user.last_name}',
+        'usertype': request.user.groups.all()[0].name,
+        # getVerdictTable
+        'verdictRow': verdictRow,
+        'verdictTotal': verdictTotal,
+    })
 
 @authenticated
 def result(request):

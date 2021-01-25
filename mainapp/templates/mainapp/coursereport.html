@@ -1,0 +1,52 @@
+{% extends "mainapp/facultylayout.html" %}
+{% block title %}Dashboard{% endblock %}
+{% block body %}
+    <div class="flex-container blockwise">
+        <div class="box-section">
+            <div class="box-section-head">Course Verdict Table</div>
+            <div class="box-section-body">
+                {% comment %} <p>The following is a sample placeholder table for the template.</p> {% endcomment %}
+                <p><b>Number of Students:</b> {{ verdictTotal }}</p>
+                <div class="table-responsive marg-bottom">
+                    <table class="table table-bordered table-striped table-sm" style="text-align: center;">
+                        <thead>
+                            <tr>
+                                <th>CO</th>
+                                <th>PLO</th>
+                                <th>Successfully Achieved</th>
+                                <th>Successful Percentage (%)</th>
+                                <th>Failed to Achieve</th>
+                                <th>Failed Percentage (%)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vr in verdictRow %}
+                                <tr>
+                                    {% for i in vr %}
+                                        <td class="ploValues">{{ i }}</td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                            {% comment %} <script>
+                                let ploValues = document.querySelectorAll('td.ploValues');
+                                for(let i = 0; i < ploValues.length; i++) {
+                                    
+                                    if (ploValues[i].textContent.slice(0, ploValues[i].textContent.length - 2) >= 40)
+                                        ploValues[i].style = 'color: green;';
+                                    if (ploValues[i].textContent.slice(0, ploValues[i].textContent.length - 2) < 40)
+                                        ploValues[i].style = 'color: red;';
+                                }
+                            </script> {% endcomment %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    
+    <script>
+        highlightCurrentPage('coursereport');
+    </script>
+{% endblock %}
