@@ -80,4 +80,3 @@ class Evaluation_T(models.Model):
     obtainedMarks = models.FloatField()
     assessment = models.ForeignKey(Assessment_T, on_delete=models.CASCADE, default='N/A')
     enrollment = models.ForeignKey(Enrollment_T, on_delete=models.CASCADE, default=0)
-    # student = models.ForeignKey(Student_T, on_delete=models.CASCADE, default='N/A')
