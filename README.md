@@ -8,7 +8,7 @@ A web-based application written in Python (Django) to monitor the performances o
 4. Open a browser and go to the url: http://127.0.0.1:8000/
 
 ## Dependencies
-1. Python
+1. Python 3
 2. Django
 3. NumPy
 4. pandas
