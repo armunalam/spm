@@ -22,5 +22,5 @@ A few dummy users have already been created in the database. Information of 3 su
     - Username: 1234
     - Password: 34512312Aa
 * Higher Management:
-    - Username: sadia
+    - Username: mayabee
     - Password: 34512312Aa
