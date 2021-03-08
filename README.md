@@ -1,5 +1,6 @@
 # Student Performance Monitor
 A web-based application written in Python (Django) to monitor the performances of university students, particularly engineering students from Independent University, Bangladesh. It uses Program Learning Outcomes (PLOs) as provided by IEB to evaluate the students.
+
 ![SPM Screenshot](images/spm_faculty.png)
 
 ## Run SPM Server
