@@ -11,4 +11,4 @@ A web-based application written in Python (Django) to monitor the performances o
 1. Python 3
 2. Django
 3. NumPy
-4. pandas
+4. pandas (not required to run the server: it was used only to import dummy data from csv files)
