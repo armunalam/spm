@@ -12,3 +12,15 @@ A web-based application written in Python (Django) to monitor the performances o
 2. Django
 3. NumPy
 4. pandas (not required to run the server: it was used only to import dummy data from csv files)
+
+## Login Credentials
+A few dummy users have already been created in the database. Information of 3 such users from 3 different user categories are shown below.
+* Student:
+    - Username: 1810281
+    - Password: 34512312Aa
+* Faculty:
+    - Username: 1234
+    - Password: 34512312Aa
+* Higher Management:
+    - Username: sadia
+    - Password: 34512312Aa
