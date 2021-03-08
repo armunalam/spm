@@ -30,12 +30,9 @@ def logoutpage(request):
     return redirect('loginpage')
 
 
-# Dashboard
+# Dashboards
 
-# Student
-
-# Higher Management
-
+# Student Dashboard
 @allowedUsers(allowedRoles=['Student'])
 def studentDashboard(request):
     chartName = []
@@ -43,10 +40,9 @@ def studentDashboard(request):
     chartDataSet = []
     
     chartN = 'Student-wise PLO'
-    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    chartL = []
+    chartD = []
     
-    # student_id = '1625654'
     student_id = request.user.username
     print(str(student_id))
     
@@ -61,8 +57,8 @@ def studentDashboard(request):
     chartDataSet.append(chartD)
     
     chartN = 'Department-wise PLO'
-    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    chartL = []
+    chartD = []
     
     row = getDepartmentWisePLO('CSE')
     
@@ -115,6 +111,7 @@ def studentDashboard(request):
         'd': d,
     })
 
+# Faculty Dashboard
 @allowedUsers(allowedRoles=['Faculty'])
 def facultyDashboard(request):
     faculty_id = request.user.username
@@ -123,8 +120,8 @@ def facultyDashboard(request):
     chartDataSet = []
     
     chartN = 'Department-wise PLO'
-    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    chartL = []
+    chartD = []
     
     row = getDepartmentWisePLO('CSE')
     
@@ -140,10 +137,6 @@ def facultyDashboard(request):
     
     # getCourseProgressView
     (semester2, semesterActualCourse, semesterAttemptedCourse) = getCourseProgressView('CSE303', '2019')
-    
-    # print(semester2)
-    # print(semesterActualCourse)
-    # print(semesterAttemptedCourse)
     
     # Heading
     a = getNumOfCoursesHead(faculty_id)
@@ -172,6 +165,7 @@ def facultyDashboard(request):
         'd': d,
     })
 
+# Higher Management Dashboard
 @allowedUsers(allowedRoles=['Higher Management'])
 def hmDashboard(request):
     dept_id = 'CSE'
@@ -181,8 +175,8 @@ def hmDashboard(request):
     chartDataSet = []
     
     chartN = 'Department-wise PLO'
-    chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-    chartD = [] # [2, 10, 5, 3, 20, 30, 45]
+    chartL = []
+    chartD = []
     
     row = getDepartmentWisePLO('CSE')
     
@@ -233,118 +227,7 @@ def hmDashboard(request):
         'b': b,
         'c': c,
         'd': d,
-    })
-    
-
-# def tempDashboard(request):
-    
-#     chartName = []
-#     chartLabel = []
-#     chartDataSet = []
-    
-    
-    
-    
-#     chartN = 'Student-wise PLO'
-#     chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-#     chartD = [] # [2, 10, 5, 3, 20, 30, 45]
-    
-#     # student_id = '1625654'
-#     student_id = '1665555'
-    
-#     row = getStudentWisePLO(student_id)
-    
-#     for i in row:
-#         chartL.append(i[1])
-#         chartD.append(i[0])
-    
-#     chartName.append(chartN)
-#     chartLabel.append(chartL)
-#     chartDataSet.append(chartD)
-    
-#     chartN = 'Department-wise PLO'
-#     chartL = [] # ['January', 'February', 'March', 'April', 'May', 'June', 'July']
-#     chartD = [] # [2, 10, 5, 3, 20, 30, 45]
-    
-#     row = getDepartmentWisePLO('CSE')
-    
-#     for i in row:
-#         chartL.append(i[1])
-#         chartD.append(i[2])
-    
-#     chartName.append(chartN)
-#     chartLabel.append(chartL)
-#     chartDataSet.append(chartD)
-    
-#     numberOfGraphs = len(chartName)
-    
-#     # Table
-    
-#     ploTable = getCourseWisePLO(student_id)
-    
-#     # Stacked PLO Chart
-#     (plo, courses, table) = getCourseWisePLOChart(student_id)
-    
-#     # getStudentProgressView
-#     (semester, semesterActual, semesterAttempted) = getStudentProgressView(student_id, 2019)
-    
-#     # getSemesterWiseProgress
-#     (plo1, semesterActualOverall, semesterAttemptedOverall) = getSemesterWiseStudentProgress('2', 2019)
-    
-#     # getSemesterWiseProgress
-#     (plo2, programActualOverall, programAttemptedOverall) = getProgramAchievement('BSc')
-    
-#     # getCourseProgressView
-#     (semester2, semesterActualCourse, semesterAttemptedCourse) = getCourseProgressView('CSE303', '2019')
-    
-#     # getVerdictTable(course_id)
-#     (verdictRow, verdictTotal) = getVerdictTable('CSE303')
-    
-#     return render(request, 'mainapp/studentdashboard.html', {
-#         'userfullname': f'{request.user.first_name} {request.user.last_name}',
-#         'usertype': request.user.groups.all()[0].name,
-#         'numberOfGraphs': numberOfGraphs,
-#         'chartName': chartName,
-#         'chartLabel': chartLabel,
-#         'chartDataSet': chartDataSet,
-#         'ploTable': ploTable,
-        
-#         # Stacked PLO Chart
-#         'plo': plo,
-#         'courses': courses,
-#         'table': table,
-#         'ploWiseChartName': 'Course-wise PLO analysis',
-        
-#         # getStudentProgressView
-#         'semester': semester,
-#         'semesterActual': semesterActual,
-#         'semesterAttempted': semesterAttempted,
-#         'studentProgressView': 'Student Progress View (Semester-wise)',
-        
-#         # getSemesterWiseProgress
-#         'plo1': plo1,
-#         'semesterActualOverall': semesterActualOverall,
-#         'semesterAttemptedOverall': semesterAttemptedOverall,
-#         'semesterProgressView': 'Semester Progress View',
-        
-#         # getSemesterWiseProgress
-#         'plo2': plo2,
-#         'programActualOverall': programActualOverall,
-#         'programAttemptedOverall': programAttemptedOverall,
-#         'programProgressView': 'Program Progress View',
-    
-#         # getCourseProgressView
-#         'semester2': semester2,
-#         'semesterActualCourse': semesterActualCourse,
-#         'semesterAttemptedCourse': semesterAttemptedCourse,
-#         'courseProgressView': 'Course Progress View',
-        
-#         # getVerdictTable
-#         'verdictRow': verdictRow,
-#         'verdictTotal': verdictTotal,
-#     })
-    
-
+    })    
 
 @authenticated
 def dashboard(request):
@@ -386,10 +269,6 @@ def dataentry(request):
 @allowedUsers(allowedRoles=['Faculty'])
 def mapping(request):
     if request.method == 'POST':
-        # print(request.POST)
-        # print(request.POST.get('course-id'))
-        # print(request.POST.getlist('coMaps'))
-        
         course_id = request.POST.get('course-id')
         coMaps = request.POST.getlist('coMaps')
         
@@ -402,20 +281,10 @@ def mapping(request):
     
         
     return redirect('dataentry')
-    
-# def getNoOfCOs(request):
-#     if request.method == 'POST':
-#         noOfCO = 0
-#         try:
-#             noOfCO = len(CO_T.objects.filter(course_id=request.POST.get('course-id-assessment')))
-#         except:
-#             noOfCO = 0
-        
         
 @allowedUsers(allowedRoles=['Faculty'])
 def assessment(request):
     if request.method == 'POST':
-        # course_id = request.POST.get('course-id')
         faculty_id = request.user.username
         course_id = request.POST.get('course-id')
         sectionNo = request.POST.get('section')
@@ -494,15 +363,6 @@ def evaluation(request):
                 assessment_id = None
                 assessment_list.append(assessment_id)
         
-        # print(course_id)
-        # print(student_id)
-        # print(semester)
-        # print(year)
-        # print(section)
-        # print(coMarks)
-        # print(section_id)
-        # print(assessment_list)
-        
         for i in range(len(student_id)):
             enrollment_id = None
             try:
@@ -553,7 +413,6 @@ def facultystudentreportresult(request):
 @allowedUsers(allowedRoles=['Faculty', 'Higher Management'])
 def facultystudentreport(request):
     searchtag = 'true'
-
         
     if request.user.groups.exists():
             group = request.user.groups.all()[0].name
@@ -587,6 +446,7 @@ def courseReportResult(request):
         return render(request, 'mainapp/coursereport.html', {
             'userfullname': f'{request.user.first_name} {request.user.last_name}',
             'usertype': request.user.groups.all()[0].name,
+            
             # getVerdictTable
             'verdictRow': verdictRow,
             'verdictTotal': verdictTotal,
@@ -597,7 +457,6 @@ def courseReportResult(request):
 @allowedUsers(allowedRoles=['Faculty', 'Higher Management'])
 def courseReport(request):
     searchtag = 'true'
-    
     
     if request.user.groups.exists():
         group = request.user.groups.all()[0].name

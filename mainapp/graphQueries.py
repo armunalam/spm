@@ -1,6 +1,7 @@
 from django.db import connection
 import numpy as np
 
+
 def getStudentWisePLO(student_id):
     row = []
     for i in range(12):
@@ -32,6 +33,7 @@ def getStudentWisePLO(student_id):
             if temp is not None:
                 row.append((temp[0], ploNum))
     return row
+    
     
 def getDepartmentWisePLO(deptID):
     row = []
@@ -70,7 +72,6 @@ def getDepartmentWisePLO(deptID):
     
 def getCourseWisePLO(student_id):
     row = []
-    # student_id = '1625654'
 
     with connection.cursor() as cursor:
         cursor.execute('''
@@ -120,57 +121,8 @@ def getCourseWisePLO(student_id):
     return table
     
     
-# # New Code
-# row = []
-# # student_id = '1625654'
-
-# with connection.cursor() as cursor:
-#     cursor.execute('''
-#         SELECT DISTINCT co.course_id, co.coNo, p.ploNo, (PLO / TotalComark * 100) AS PLOpercentage
-#             FROM mainapp_plo_t p, mainapp_co_t co, (
-#                 SELECT DISTINCT c.course_id,c.coNo, c.plo_id, SUM(DISTINCT e.obtainedMarks) AS PLO, SUM(DISTINCT a.marks) AS TotalCoMark
-#                 FROM mainapp_enrollment_t en,
-#                     mainapp_evaluation_t e,
-#                     mainapp_assessment_t a,
-#                     mainapp_co_t c,
-#                     mainapp_plo_t p
-#                 WHERE en.student_id = '{}'
-#                     AND en.enrollmentID = e.enrollment_id
-#                     AND e.assessment_id = a.assessmentNo
-#                     AND a.co_id = c.id
-#                     AND c.plo_id = p.ploNo
-#                 GROUP BY en.section_id,c.plo_id
-#                 ORDER BY c.plo_id
-#             ) ploPer
-#         WHERE co.coNo = ploPer.coNo
-#             AND p.ploNo = ploPer.plo_id
-#             AND co.course_id = ploPer.course_id;
-#     '''.format(student_id))
-#     temp = cursor.fetchall()
-#     if temp is not None:
-#         row = temp
-
-# courses = []
-# for i in row:
-#     if i[0] not in courses:
-#         courses.append(i[0])
-
-# table = []
-# plo = ['PLO01', 'PLO02', 'PLO03', 'PLO04', 'PLO05', 'PLO06', 'PLO07', 'PLO08', 'PLO09', 'PLO10', 'PLO11', 'PLO12']
-
-# for j in plo:
-#     tempTable = [j]
-#     for i in courses:
-#         for k in row:
-#             if j == k[2] and i == k[0]:
-#                 tempTable.append([i, np.round(k[3], 1)])
-#     table.append(tempTable)
-    
-# return table
-
 def getCourseWisePLOChart(student_id):
     row = []
-    # student_id = '1625654'
 
     with connection.cursor() as cursor:
         cursor.execute('''
@@ -309,9 +261,7 @@ def getSemesterWiseStudentProgress(semester, year):
     semesterActual = []
     semesterAttempted = []
     row = []
-    # for i in range(3):
-    #     counterActual = 0
-    #     counterAttempted = 0
+    
     for j in plo:
         with connection.cursor() as cursor:
             cursor.execute('''
@@ -387,9 +337,7 @@ def getProgramAchievement(prog):
     semesterActual = []
     semesterAttempted = []
     row = []
-    # for i in range(3):
-    #     counterActual = 0
-    #     counterAttempted = 0
+    
     for j in plo:
         with connection.cursor() as cursor:
             cursor.execute('''
@@ -460,6 +408,7 @@ def getProgramAchievement(prog):
             semesterAttempted.append(row[0][0])
     
     return (plo, semesterActual, semesterAttempted)
+    
     
 def getCourseProgressView(course_id, year):
     plo = ['PLO01', 'PLO02', 'PLO03', 'PLO04', 'PLO05', 'PLO06', 'PLO07', 'PLO08', 'PLO09', 'PLO10', 'PLO11', 'PLO12']
@@ -540,7 +489,6 @@ def getCourseProgressView(course_id, year):
         semesterAttempted.append(ploAttempted)
         
     tempActual = np.array(semesterActual)
-    # tempAttempted = np.array(semesterAttempted)
     
     for i in range(1, tempActual.shape[0]):
         tempActual[i, :] += tempActual[i - 1, :]
@@ -553,7 +501,6 @@ def getCourseProgressView(course_id, year):
     
     semester = ['Spring', 'Summer', 'Autumn']
     return (semester, semesterActual, semesterAttempted)
-
 
 
 def getVerdictTable(course_id):
@@ -593,7 +540,6 @@ def getVerdictTable(course_id):
         row = cursor.fetchall()
         if row is None:
             row = []
-            
         
         cursor.execute('''
             SELECT coNo,ploNo,COUNT(TotalPlo.PLOpercentage) AS Acheive
@@ -1031,4 +977,3 @@ def getNumOfPLOsTaught(faculty_id):
             number = 0
             
     return number
-
