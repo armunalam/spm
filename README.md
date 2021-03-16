@@ -26,3 +26,11 @@ A few dummy users have already been created in the database. Information of 3 su
 * Higher Management:
     - Username: mayabee
     - Password: 34512312Aa
+
+## Contributers
+1. Armun Alam
+2. Tanzila Tahsin Mayabee
+3. Talha Hassan
+4. Sadia Khan
+5. Jannat Khair Chowdhury
+6. Samsul Amin
