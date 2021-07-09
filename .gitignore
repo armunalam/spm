@@ -1,3 +1,3 @@
 .vscode
-spm/__pycache__
-mainapp/__pycache__
+spm/__pycache__/
+mainapp/__pycache__/
