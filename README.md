@@ -6,7 +6,7 @@ A web-based application written in Python (Django) to monitor the performances o
 ## Run SPM Server
 1. Clone the repository using `git clone https://github.com/armunalam/spm.git`
 2. Open the terminal (or command prompt), and `cd` into the cloned 'spm' directory.
-3. [Optional] Create a vitual environment (I used `conda`).
+3. [Optional] Create a virtual environment (I used `conda`).
 4. Install all the prerequisites using `pip install -r requirements.txt` (you have to be in the project directory to do this)
 5. Run the command: `python manage.py runserver` or `python3 manage.py runserver`
 6. Open a browser and go to the url: http://127.0.0.1:8000/
