@@ -9,7 +9,7 @@ A web-based application written in Python (Django) to monitor the performances o
 3. [Optional] Create a virtual environment (I used `conda`).
 4. Install all the prerequisites using `pip install -r requirements.txt` (you have to be in the project directory to do this)
 5. Run the command: `python manage.py runserver` or `python3 manage.py runserver`
-6. Open a browser and go to the url: http://127.0.0.1:8000/
+6. Open a browser and go to the URL: http://127.0.0.1:8000/
 
 ## Dependencies
 1. Python 3 (version 3.8.10)
@@ -18,7 +18,7 @@ A web-based application written in Python (Django) to monitor the performances o
 4. pandas (not required to run the server: it was used only to import dummy data from csv files)
 
 ## Login Credentials
-A few dummy users have already been created in the database. Information of 3 such users from 3 different user categories are shown below.
+A few dummy users have already been created in the database. Information on 3 such users from 3 different user categories is shown below.
 * Student:
     - Username: 1810281
     - Password: 34512312Aa
@@ -29,7 +29,7 @@ A few dummy users have already been created in the database. Information of 3 su
     - Username: mayabee
     - Password: 34512312Aa
 
-## Contributers
+## Contributors
 * Armun Alam
 * Tanzila Tahsin Mayabee
 * Talha Hassan
